@@ -27,16 +27,11 @@ dependencies:
   bloc: ^4.0.0
   flutter_bloc: ^4.0.1
   hydrated_bloc: ^4.1.1
-  flutter_launcher_name: "^0.0.1"
-  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   pedantic: ^1.8.0
-  
-flutter_launcher_name:
-  name: "PlaFin"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
