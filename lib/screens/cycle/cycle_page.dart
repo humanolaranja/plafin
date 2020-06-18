@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plafin/shared/components.dart';
+import 'package:plafin/shared/components/CommonAppBar.dart';
 
 class CyclePage extends StatelessWidget {
   const CyclePage({Key key}) : super(key: key);

@@ -4,7 +4,9 @@ import 'package:plafin/entities/cycle.dart';
 import 'package:plafin/routes.dart';
 import 'package:plafin/screens/cycle/cycle_page.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
-import 'package:plafin/shared/components.dart';
+import 'package:plafin/screens/cycles/widgets/CustomFloatingActionButton.dart';
+import 'package:plafin/screens/new_cycle/new_cycle_page.dart';
+import 'package:plafin/shared/components/CommonAppBar.dart';
 
 class CyclesPage extends StatelessWidget {
   const CyclesPage({Key key}) : super(key: key);
@@ -14,11 +16,7 @@ class CyclesPage extends StatelessWidget {
     return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
       return Scaffold(
         appBar: CommonAppBar(title: "Cycles"),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Routes().navigateToNewCyclePage(context),
-          child: Icon(Icons.add),
-          backgroundColor: Colors.deepOrangeAccent,
-        ),
+        floatingActionButton: CustomFloatingActionButton(),
         body: SafeArea(
           child: ListView.separated(
             itemCount: cyclesState.cycles.length,
@@ -26,6 +24,7 @@ class CyclesPage extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               Cycle item = cyclesState.cycles[index];
               return GestureDetector(
+                onLongPress: () => showBottomSheet(context: context, builder: (context) => NewCyclePage()),
                 onTap: () => Routes().navigateToCyclePage(context, CyclePageArguments(id: index)),
                 child: ListTile(
                   title: Text(item.date),

@@ -27,6 +27,7 @@ dependencies:
   bloc: ^4.0.0
   flutter_bloc: ^4.0.1
   hydrated_bloc: ^4.1.1
+  date_format: ^1.0.8
 
 dev_dependencies:
   flutter_test:

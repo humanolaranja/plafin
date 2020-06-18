@@ -20,6 +20,14 @@ void main() async {
         title: 'PlaFin',
         initialRoute: Routes.homePagePath,
         routes: Routes().getDefault(),
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.deepOrange,
+          accentColor: Colors.deepOrangeAccent,
+          visualDensity: VisualDensity.standard,
+          floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
+          buttonColor: Colors.deepOrange,
+        ),
       ),
     ),
   );

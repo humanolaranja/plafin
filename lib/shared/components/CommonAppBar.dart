@@ -8,7 +8,6 @@ class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      backgroundColor: Colors.deepOrangeAccent,
     );
   }
 
