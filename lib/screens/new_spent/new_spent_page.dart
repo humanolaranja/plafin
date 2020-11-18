@@ -9,81 +9,109 @@ class NewSpentPage extends StatefulWidget {
 }
 
 class _NewSpentPageState extends State<NewSpentPage> {
+  final _formKey = GlobalKey<FormState>();
+  final String prefixValue = 'R\$ ';
   String name = '';
-  double value = 0;
+  double value = 0.0;
   bool income = false;
+
+  _requiredField(String text) {
+    if (text.isEmpty || text == '0.0') {
+      return 'Preenchimento obrigatório';
+    }
+    return null;
+  }
+
+  _createNewSpent(BuildContext context) {
+    if (_formKey.currentState.validate()) {
+      print('name: $name, value: $value, income: $income');
+      Navigator.of(context).pop();
+    }
+  }
+
+  _parseValue(String value) {
+    return double.tryParse(value.replaceAll('.', '').replaceAll(',', '.').replaceAll(prefixValue, '')) ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {
-    String prefixValue = 'R\$ ';
-
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Container(
           padding: MediaQuery.of(context).viewInsets,
           width: MediaQuery.of(context).size.width,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: TextField(
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    hintText: 'Nome',
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      hintText: 'Nome',
+                    ),
+                    onChanged: (newName) {
+                      setState(() {
+                        name = newName;
+                      });
+                    },
+                    validator: (name) {
+                      return _requiredField(name);
+                    },
                   ),
-                  onChanged: (newName) {
-                    setState(() {
-                      name = newName;
-                    });
-                  },
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Valor',
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Valor',
+                    ),
+                    inputFormatters: [
+                      CurrencyTextInputFormatter(
+                        decimalDigits: 2,
+                        symbol: prefixValue,
+                        locale: 'pt-BR',
+                      )
+                    ],
+                    keyboardType: TextInputType.number,
+                    onChanged: (newValue) {
+                      setState(() {
+                        value = _parseValue(newValue);
+                      });
+                    },
+                    validator: (value) {
+                      print(_parseValue(value).toString());
+                      return _requiredField(_parseValue(value).toString());
+                    },
                   ),
-                  inputFormatters: [
-                    CurrencyTextInputFormatter(
-                      decimalDigits: 2,
-                      symbol: prefixValue,
-                      locale: 'pt-BR',
-                    )
-                  ],
-                  keyboardType: TextInputType.number,
-                  onChanged: (newValue) {
-                    setState(() {
-                      value = double.tryParse(newValue.replaceAll('.', '').replaceAll(',', '.').replaceAll(prefixValue, '')) ?? 0;
-                    });
-                  },
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: CheckboxListTile(
-                  title: Text('Receita'),
-                  value: income,
-                  onChanged: (isIncome) {
-                    setState(() {
-                      income = isIncome;
-                    });
-                  },
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: CheckboxListTile(
+                    title: Text('Receita'),
+                    value: income,
+                    onChanged: (isIncome) {
+                      setState(() {
+                        income = isIncome;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              Container(
-                width: double.infinity,
-                height: 48,
-                child: RaisedButton(
-                  onPressed: () => {Navigator.of(context).pop()},
-                  child: Text("Criar"),
-                ),
-              )
-            ],
+                Container(
+                  width: double.infinity,
+                  height: 48,
+                  child: RaisedButton(
+                    onPressed: () => _createNewSpent(context),
+                    child: Text("Criar"),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
