@@ -26,6 +26,8 @@ void main() async {
           visualDensity: VisualDensity.standard,
           floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
           buttonColor: Colors.deepOrange,
+          toggleableActiveColor: Colors.deepOrange,
+          unselectedWidgetColor: Colors.deepOrange,
         ),
       ),
     ),

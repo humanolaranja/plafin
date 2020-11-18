@@ -53,7 +53,7 @@ class _NewCyclePageState extends State<NewCyclePage> {
                     ),
                     Navigator.of(context).pop()
                   },
-                  child: Text("Create"),
+                  child: Text("Criar"),
                 ),
               )
             ],

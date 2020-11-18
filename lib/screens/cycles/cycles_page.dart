@@ -15,7 +15,7 @@ class CyclesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
       return Scaffold(
-        appBar: CommonAppBar(title: "Cycles"),
+        appBar: CommonAppBar(title: "Ciclos"),
         floatingActionButton: CyclesFloatingActionButton(),
         body: SafeArea(
           child: ListView.separated(

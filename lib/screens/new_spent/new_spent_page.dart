@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 
 class NewSpentPage extends StatefulWidget {
@@ -14,6 +15,8 @@ class _NewSpentPageState extends State<NewSpentPage> {
 
   @override
   Widget build(BuildContext context) {
+    String prefixValue = 'R\$ ';
+
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.all(16),
@@ -26,18 +29,58 @@ class _NewSpentPageState extends State<NewSpentPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: TextField(
-                    onChanged: (newName) {
+                padding: EdgeInsets.all(16),
+                child: TextField(
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText: 'Nome',
+                  ),
+                  onChanged: (newName) {
+                    setState(() {
                       name = newName;
-                    },
-                  )),
+                    });
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Valor',
+                  ),
+                  inputFormatters: [
+                    CurrencyTextInputFormatter(
+                      decimalDigits: 2,
+                      symbol: prefixValue,
+                      locale: 'pt-BR',
+                    )
+                  ],
+                  keyboardType: TextInputType.number,
+                  onChanged: (newValue) {
+                    setState(() {
+                      value = double.tryParse(newValue.replaceAll('.', '').replaceAll(',', '.').replaceAll(prefixValue, '')) ?? 0;
+                    });
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: CheckboxListTile(
+                  title: Text('Receita'),
+                  value: income,
+                  onChanged: (isIncome) {
+                    setState(() {
+                      income = isIncome;
+                    });
+                  },
+                ),
+              ),
               Container(
                 width: double.infinity,
                 height: 48,
                 child: RaisedButton(
                   onPressed: () => {Navigator.of(context).pop()},
-                  child: Text("Create"),
+                  child: Text("Criar"),
                 ),
               )
             ],
