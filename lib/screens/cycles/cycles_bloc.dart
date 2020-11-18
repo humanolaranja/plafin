@@ -3,10 +3,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:plafin/entities/cycle.dart';
 
 class CyclesBloc extends HydratedBloc<CyclesEvent, CyclesState> {
-  @override
-  CyclesState get initialState {
-    return super.initialState ?? CyclesState(cycles: []);
-  }
+  CyclesBloc() : super(CyclesState(cycles: []));
 
   @override
   CyclesState fromJson(Map<dynamic, dynamic> json) {
