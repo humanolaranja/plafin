@@ -1,7 +1,9 @@
+import 'package:plafin/entities/spent.dart';
+
 class Cycle {
   String date;
   double initialMoney;
-  List<dynamic> spendings = const [];
+  List<Spent> spendings = <Spent>[];
 
   Cycle({this.date, this.initialMoney, this.spendings});
 
@@ -11,7 +13,7 @@ class Cycle {
     cycle.initialMoney = json['initialMoney'];
     if (json.containsKey('spendings')) {
       var items = json['spendings'] as List;
-      cycle.spendings = items.map((e) => e).toList();
+      cycle.spendings = items.map((e) => Spent.fromJson(e)).toList();
     }
 
     return cycle;

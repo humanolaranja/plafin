@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plafin/screens/new_cycle/new_cycle_page.dart';
 
-class CustomFloatingActionButton extends StatelessWidget {
+class CyclesFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(

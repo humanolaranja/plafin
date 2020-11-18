@@ -4,7 +4,7 @@ import 'package:plafin/entities/cycle.dart';
 import 'package:plafin/routes.dart';
 import 'package:plafin/screens/cycle/cycle_page.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
-import 'package:plafin/screens/cycles/widgets/CustomFloatingActionButton.dart';
+import 'package:plafin/screens/cycles/widgets/CyclesFloatingActionButton.dart';
 import 'package:plafin/screens/new_cycle/new_cycle_page.dart';
 import 'package:plafin/shared/components/CommonAppBar.dart';
 
@@ -16,13 +16,13 @@ class CyclesPage extends StatelessWidget {
     return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
       return Scaffold(
         appBar: CommonAppBar(title: "Cycles"),
-        floatingActionButton: CustomFloatingActionButton(),
+        floatingActionButton: CyclesFloatingActionButton(),
         body: SafeArea(
           child: ListView.separated(
-            itemCount: cyclesState.cycles.length,
+            itemCount: cyclesState?.cycles?.length ?? 0,
             separatorBuilder: (BuildContext context, int index) => Divider(),
             itemBuilder: (BuildContext context, int index) {
-              Cycle item = cyclesState.cycles[index];
+              Cycle item = cyclesState?.cycles[index];
               return GestureDetector(
                 onLongPress: () => showBottomSheet(context: context, builder: (context) => NewCyclePage()),
                 onTap: () => Routes().navigateToCyclePage(context, CyclePageArguments(id: index)),
