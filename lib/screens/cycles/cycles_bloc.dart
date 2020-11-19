@@ -40,6 +40,9 @@ class CyclesBloc extends HydratedBloc<CyclesEvent, CyclesState> {
     if (event is AddSpentToCycleEvent) {
       return _handleAddSpentToCycleEvent(this.state, event);
     }
+    if (event is DeleteCycleEvent) {
+      return _handleDeleteCycleEvent(this.state, event);
+    }
     return Stream.value(this.state);
   }
 }
@@ -51,6 +54,16 @@ Stream<CyclesState> _handleAddSpentToCycleEvent(CyclesState currentState, AddSpe
 
   cycles[event.index].amount = cycles[event.index].amount + value;
   cycles[event.index].spendings.add(Spent(name: event.name, value: event.value, income: event.income));
+  newState.cycles = cycles;
+
+  yield newState;
+}
+
+Stream<CyclesState> _handleDeleteCycleEvent(CyclesState currentState, DeleteCycleEvent event) async* {
+  CyclesState newState = currentState.cloneAs(CyclesState());
+  List<Cycle> cycles = newState.cycles.toList();
+
+  cycles.removeAt(event.index);
   newState.cycles = cycles;
 
   yield newState;
@@ -87,6 +100,12 @@ class AddSpentToCycleEvent extends CyclesEvent {
   bool income;
 
   AddSpentToCycleEvent({@required this.index, @required this.name, @required this.value, @required this.income});
+}
+
+class DeleteCycleEvent extends CyclesEvent {
+  int index;
+
+  DeleteCycleEvent({@required this.index});
 }
 
 class CyclesState {

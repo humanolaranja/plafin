@@ -16,10 +16,27 @@ class CyclePage extends StatelessWidget {
     final CyclePageArguments args = ModalRoute.of(context).settings.arguments;
 
     return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
-      Cycle item = cyclesState.cycles[args.id];
+      int index = args.id;
+      Cycle item;
+
+      if (cyclesState.cycles.isEmpty || !cyclesState.cycles.asMap().containsKey(index)) {
+        item = Cycle(amount: 0, date: '', initialAmount: 0, spendings: []);
+      } else {
+        item = cyclesState?.cycles[index];
+      }
       return Scaffold(
-        appBar: CommonAppBar(title: '${item.date}'),
-        floatingActionButton: CycleFloatingActionButton(args.id),
+        appBar: CommonAppBar(title: '${item.date}', actions: <Widget>[
+          FlatButton(
+            textColor: Colors.white,
+            onPressed: () {
+              BlocProvider.of<CyclesBloc>(context).add(DeleteCycleEvent(index: index));
+              Navigator.of(context).pop();
+            },
+            child: Icon(Icons.delete),
+            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+          ),
+        ]),
+        floatingActionButton: CycleFloatingActionButton(index),
         body: SafeArea(
           child: item.spendings.isEmpty
               ? Container(
