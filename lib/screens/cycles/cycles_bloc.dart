@@ -37,8 +37,21 @@ class CyclesBloc extends HydratedBloc<CyclesEvent, CyclesState> {
     if (event is AddCycleEvent) {
       return _handleAddCycleEvent(this.state, event);
     }
+    if (event is AddSpentToCycleEvent) {
+      return _handleAddSpentToCycleEvent(this.state, event);
+    }
     return Stream.value(this.state);
   }
+}
+
+Stream<CyclesState> _handleAddSpentToCycleEvent(CyclesState currentState, AddSpentToCycleEvent event) async* {
+  CyclesState newState = currentState.cloneAs(CyclesState());
+  List<Cycle> cycles = newState.cycles.toList();
+
+  cycles[event.index].spendings.add(Spent(name: event.name, value: event.value, income: event.income));
+  newState.cycles = cycles;
+
+  yield newState;
 }
 
 Stream<CyclesState> _handleAddCycleEvent(CyclesState currentState, AddCycleEvent event) async* {
@@ -56,7 +69,17 @@ abstract class CyclesEvent {}
 class AddCycleEvent extends CyclesEvent {
   String date;
   double initialMoney;
+
   AddCycleEvent({@required this.date, @required this.initialMoney});
+}
+
+class AddSpentToCycleEvent extends CyclesEvent {
+  int index;
+  String name;
+  double value;
+  bool income;
+
+  AddSpentToCycleEvent({@required this.index, @required this.name, @required this.value, @required this.income});
 }
 
 class CyclesState {

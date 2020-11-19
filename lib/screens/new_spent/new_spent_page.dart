@@ -1,8 +1,11 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plafin/screens/cycles/cycles_bloc.dart';
 
 class NewSpentPage extends StatefulWidget {
-  const NewSpentPage({Key key}) : super(key: key);
+  final int index;
+  const NewSpentPage(this.index, {Key key}) : super(key: key);
 
   @override
   _NewSpentPageState createState() => _NewSpentPageState();
@@ -25,6 +28,9 @@ class _NewSpentPageState extends State<NewSpentPage> {
   _createNewSpent(BuildContext context) {
     if (_formKey.currentState.validate()) {
       print('name: $name, value: $value, income: $income');
+      BlocProvider.of<CyclesBloc>(context).add(
+        AddSpentToCycleEvent(index: widget.index, name: name, value: value, income: income),
+      );
       Navigator.of(context).pop();
     }
   }
