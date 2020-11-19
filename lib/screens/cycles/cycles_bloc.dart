@@ -73,6 +73,11 @@ Stream<CyclesState> _handleDeleteSpentInCycleEvent(CyclesState currentState, Del
 
   cycles[event.cycleIndex].amount = cycles[event.cycleIndex].amount - value;
   cycles[event.cycleIndex].spendings.removeAt(event.index);
+
+  if (cycles[event.cycleIndex].spendings.isEmpty) {
+    cycles[event.cycleIndex].amount = 0;
+  }
+
   newState.cycles = cycles;
 
   yield newState;
@@ -107,11 +112,11 @@ Stream<CyclesState> _handleAddCycleEvent(CyclesState currentState, AddCycleEvent
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   List<Spent> spendings = <Spent>[];
-  if (event.initialAmount > 0) {
-    spendings.add(Spent(income: true, name: 'Saldo Inicial', value: event.initialAmount));
+  if (event.amount > 0) {
+    spendings.add(Spent(income: true, name: 'Saldo Inicial', value: event.amount));
   }
 
-  cycles.add(Cycle(date: event.date, initialAmount: event.initialAmount, amount: event.amount, spendings: spendings));
+  cycles.add(Cycle(date: event.date, amount: event.amount, spendings: spendings));
   newState.cycles = cycles;
 
   yield newState;
@@ -121,10 +126,9 @@ abstract class CyclesEvent {}
 
 class AddCycleEvent extends CyclesEvent {
   String date;
-  double initialAmount;
   double amount;
 
-  AddCycleEvent({@required this.date, @required this.initialAmount, @required this.amount});
+  AddCycleEvent({@required this.date, @required this.amount});
 }
 
 class AddSpentToCycleEvent extends CyclesEvent {

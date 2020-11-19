@@ -21,7 +21,7 @@ class CyclePage extends StatelessWidget {
       Cycle item;
 
       if (cyclesState.cycles.isEmpty || !cyclesState.cycles.asMap().containsKey(index)) {
-        item = Cycle(amount: 0, date: '', initialAmount: 0, spendings: []);
+        item = Cycle(amount: 0, date: '', spendings: []);
       } else {
         item = cyclesState?.cycles[index];
       }

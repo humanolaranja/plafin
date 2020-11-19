@@ -77,7 +77,7 @@ class _NewCyclePageState extends State<NewCyclePage> {
                 child: RaisedButton(
                   onPressed: () => {
                     BlocProvider.of<CyclesBloc>(context).add(
-                      AddCycleEvent(initialAmount: initialAmount ?? 0, amount: initialAmount ?? 0, date: date),
+                      AddCycleEvent(amount: initialAmount ?? 0, date: date),
                     ),
                     Navigator.of(context).pop()
                   },
