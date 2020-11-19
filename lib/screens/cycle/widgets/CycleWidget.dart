@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plafin/entities/spent.dart';
 import 'package:plafin/screens/cycle/widgets/CycleOptions.dart';
+import 'package:plafin/screens/cycles/cycles_bloc.dart';
 import 'package:plafin/shared/utils/formatUtils.dart';
 
 class CycleWidget extends StatelessWidget {
@@ -34,14 +36,37 @@ class CycleWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              child: Text(
-                spent.name,
-                overflow: TextOverflow.ellipsis,
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: Checkbox(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: spent.done,
+                      onChanged: (isDone) {
+                        print(isDone);
+                        BlocProvider.of<CyclesBloc>(context).add(DoneSpentInCycleEvent(cycleIndex: cycleIndex, index: index, done: isDone));
+                      },
+                    ),
+                  ),
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        spent.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Text(
               FormatUtils.doubleValueToMoney(spent.value),
-              style: TextStyle(color: spent.income ? Colors.green : Colors.deepOrangeAccent),
+              style: TextStyle(
+                color: spent.income ? Colors.green : Colors.deepOrangeAccent,
+              ),
             ),
           ],
         ),

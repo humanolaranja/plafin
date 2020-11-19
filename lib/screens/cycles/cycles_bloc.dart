@@ -49,6 +49,9 @@ class CyclesBloc extends HydratedBloc<CyclesEvent, CyclesState> {
     if (event is EditSpentInCycleEvent) {
       return _handleEditSpentInCycleEvent(this.state, event);
     }
+    if (event is DoneSpentInCycleEvent) {
+      return _handleDoneSpentInCycleEvent(this.state, event);
+    }
     return Stream.value(this.state);
   }
 }
@@ -59,7 +62,7 @@ Stream<CyclesState> _handleAddSpentToCycleEvent(CyclesState currentState, AddSpe
   double value = event.income ? event.value : event.value * -1;
 
   cycles[event.index].amount = cycles[event.index].amount + value;
-  cycles[event.index].spendings.add(Spent(name: event.name, value: event.value, income: event.income));
+  cycles[event.index].spendings.add(Spent(name: event.name, value: event.value, income: event.income, done: false));
   newState.cycles = cycles;
 
   yield newState;
@@ -100,6 +103,16 @@ Stream<CyclesState> _handleEditSpentInCycleEvent(CyclesState currentState, EditS
   yield newState;
 }
 
+Stream<CyclesState> _handleDoneSpentInCycleEvent(CyclesState currentState, DoneSpentInCycleEvent event) async* {
+  CyclesState newState = currentState.cloneAs(CyclesState());
+  List<Cycle> cycles = newState.cycles.toList();
+
+  cycles[event.cycleIndex].spendings[event.index].done = event.done;
+  newState.cycles = cycles;
+
+  yield newState;
+}
+
 Stream<CyclesState> _handleDeleteCycleEvent(CyclesState currentState, DeleteCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
@@ -115,7 +128,7 @@ Stream<CyclesState> _handleAddCycleEvent(CyclesState currentState, AddCycleEvent
   List<Cycle> cycles = newState.cycles.toList();
   List<Spent> spendings = <Spent>[];
   if (event.amount > 0) {
-    spendings.add(Spent(income: true, name: 'Saldo Inicial', value: event.amount));
+    spendings.add(Spent(income: true, name: 'Saldo Inicial', value: event.amount, done: false));
   }
 
   cycles.add(Cycle(date: event.date, amount: event.amount, spendings: spendings));
@@ -163,6 +176,14 @@ class EditSpentInCycleEvent extends CyclesEvent {
   bool income;
 
   EditSpentInCycleEvent({@required this.cycleIndex, @required this.index, @required this.name, @required this.value, @required this.income});
+}
+
+class DoneSpentInCycleEvent extends CyclesEvent {
+  int cycleIndex;
+  int index;
+  bool done;
+
+  DoneSpentInCycleEvent({@required this.cycleIndex, @required this.index, @required this.done});
 }
 
 class CyclesState {
