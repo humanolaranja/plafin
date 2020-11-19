@@ -52,7 +52,6 @@ class CycleOptions extends StatelessWidget {
                           Navigator.of(context).pop(),
                         },
                         confirm: () => {
-                          print('delete $index in cycle $cycleIndex'),
                           BlocProvider.of<CyclesBloc>(context).add(
                             DeleteSpentInCycleEvent(index: index, cycleIndex: cycleIndex),
                           ),

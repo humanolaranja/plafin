@@ -27,7 +27,6 @@ class _NewSpentPageState extends State<NewSpentPage> {
 
   _createNewSpent(BuildContext context) {
     if (_formKey.currentState.validate()) {
-      print('name: $name, value: $value, income: $income');
       BlocProvider.of<CyclesBloc>(context).add(
         AddSpentToCycleEvent(index: widget.index, name: name, value: value, income: income),
       );
@@ -91,7 +90,6 @@ class _NewSpentPageState extends State<NewSpentPage> {
                       });
                     },
                     validator: (value) {
-                      print(_parseValue(value).toString());
                       return _requiredField(_parseValue(value).toString());
                     },
                   ),

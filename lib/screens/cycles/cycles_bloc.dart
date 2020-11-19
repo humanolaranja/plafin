@@ -90,7 +90,7 @@ Stream<CyclesState> _handleAddCycleEvent(CyclesState currentState, AddCycleEvent
   List<Cycle> cycles = newState.cycles.toList();
   List<Spent> spendings = <Spent>[];
   if (event.initialAmount > 0) {
-    spendings.add(Spent(income: true, name: 'Valor Inicial', value: event.initialAmount));
+    spendings.add(Spent(income: true, name: 'Saldo Inicial', value: event.initialAmount));
   }
 
   cycles.add(Cycle(date: event.date, initialAmount: event.initialAmount, amount: event.amount, spendings: spendings));

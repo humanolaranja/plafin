@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,8 +12,13 @@ class NewCyclePage extends StatefulWidget {
 }
 
 class _NewCyclePageState extends State<NewCyclePage> {
+  final String prefixValue = 'R\$ ';
   DateTime selectedDate = DateTime.now();
-  double initialAmount = 0;
+  double initialAmount = 0.0;
+
+  _parseValue(String value) {
+    return double.tryParse(value.replaceAll('.', '').replaceAll(',', '.').replaceAll(prefixValue, '')) ?? 0;
+  }
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(context: context, initialDate: selectedDate, firstDate: DateTime(2015, 8), lastDate: DateTime(2101));
@@ -34,11 +40,32 @@ class _NewCyclePageState extends State<NewCyclePage> {
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.all(16),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Saldo Inicial',
+                  ),
+                  inputFormatters: [
+                    CurrencyTextInputFormatter(
+                      decimalDigits: 2,
+                      symbol: prefixValue,
+                      locale: 'pt-BR',
+                    )
+                  ],
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      initialAmount = _parseValue(value);
+                    });
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
                 child: FlatButton(
                   onPressed: () => _selectDate(context),
                   child: Text(date),
@@ -50,7 +77,7 @@ class _NewCyclePageState extends State<NewCyclePage> {
                 child: RaisedButton(
                   onPressed: () => {
                     BlocProvider.of<CyclesBloc>(context).add(
-                      AddCycleEvent(initialAmount: initialAmount, amount: initialAmount, date: date),
+                      AddCycleEvent(initialAmount: initialAmount ?? 0, amount: initialAmount ?? 0, date: date),
                     ),
                     Navigator.of(context).pop()
                   },
