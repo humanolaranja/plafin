@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plafin/entities/spent.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
+import 'package:plafin/screens/new_edit_spent/new_edit_spent_page.dart';
 import 'package:plafin/shared/components/ConfirmDialog.dart';
 
 class CycleOptions extends StatelessWidget {
+  final Spent spent;
   final int cycleIndex;
   final int index;
-  CycleOptions({@required this.cycleIndex, @required this.index});
+
+  CycleOptions({@required this.spent, @required this.cycleIndex, @required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,22 @@ class CycleOptions extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: InkWell(
-                  onTap: () => print('edit $index in cycle $cycleIndex'),
+                  onTap: () => {
+                    showModalBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      isScrollControlled: true,
+                      builder: (context) => NewEditSpentPage(
+                        cycleIndex: cycleIndex,
+                        index: index,
+                        income: spent.income,
+                        name: spent.name,
+                        value: spent.value,
+                      ),
+                    ),
+                  },
                   child: ListTile(
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

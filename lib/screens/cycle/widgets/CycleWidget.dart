@@ -18,6 +18,7 @@ class CycleWidget extends StatelessWidget {
       ),
       isScrollControlled: true,
       builder: (context) => CycleOptions(
+        spent: spent,
         cycleIndex: cycleIndex,
         index: index,
       ),

@@ -46,6 +46,9 @@ class CyclesBloc extends HydratedBloc<CyclesEvent, CyclesState> {
     if (event is DeleteSpentInCycleEvent) {
       return _handleDeleteSpentInCycleEvent(this.state, event);
     }
+    if (event is EditSpentInCycleEvent) {
+      return _handleEditSpentInCycleEvent(this.state, event);
+    }
     return Stream.value(this.state);
   }
 }
@@ -70,6 +73,21 @@ Stream<CyclesState> _handleDeleteSpentInCycleEvent(CyclesState currentState, Del
 
   cycles[event.cycleIndex].amount = cycles[event.cycleIndex].amount - value;
   cycles[event.cycleIndex].spendings.removeAt(event.index);
+  newState.cycles = cycles;
+
+  yield newState;
+}
+
+Stream<CyclesState> _handleEditSpentInCycleEvent(CyclesState currentState, EditSpentInCycleEvent event) async* {
+  CyclesState newState = currentState.cloneAs(CyclesState());
+  List<Cycle> cycles = newState.cycles.toList();
+  Spent spent = cycles[event.cycleIndex].spendings[event.index];
+  double value = spent.income ? spent.value : spent.value * -1;
+
+  cycles[event.cycleIndex].amount = cycles[event.cycleIndex].amount + value;
+  cycles[event.cycleIndex].spendings[event.index].income = event.income;
+  cycles[event.cycleIndex].spendings[event.index].name = event.name;
+  cycles[event.cycleIndex].spendings[event.index].value = event.value;
   newState.cycles = cycles;
 
   yield newState;
@@ -129,6 +147,16 @@ class DeleteSpentInCycleEvent extends CyclesEvent {
   int index;
 
   DeleteSpentInCycleEvent({@required this.cycleIndex, @required this.index});
+}
+
+class EditSpentInCycleEvent extends CyclesEvent {
+  int cycleIndex;
+  int index;
+  String name;
+  double value;
+  bool income;
+
+  EditSpentInCycleEvent({@required this.cycleIndex, @required this.index, @required this.name, @required this.value, @required this.income});
 }
 
 class CyclesState {
