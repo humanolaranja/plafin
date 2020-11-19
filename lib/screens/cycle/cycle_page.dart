@@ -60,9 +60,9 @@ class CyclePage extends StatelessWidget {
                 )
               : ListView.separated(
                   itemCount: item.spendings.length + 1,
-                  separatorBuilder: (BuildContext context, int index) => Divider(),
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == item.spendings.length) {
+                  separatorBuilder: (BuildContext context, int spentIndex) => Divider(),
+                  itemBuilder: (BuildContext context, int spentIndex) {
+                    if (spentIndex == item.spendings.length) {
                       return ListTile(
                         title: Container(
                           alignment: Alignment.centerRight,
@@ -70,7 +70,11 @@ class CyclePage extends StatelessWidget {
                         ),
                       );
                     } else {
-                      return CycleWidget(item.spendings[index], index);
+                      return CycleWidget(
+                        spent: item.spendings[spentIndex],
+                        cycleIndex: index,
+                        index: spentIndex,
+                      );
                     }
                   },
                 ),

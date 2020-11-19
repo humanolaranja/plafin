@@ -6,7 +6,9 @@ import 'package:plafin/shared/utils/formatUtils.dart';
 class CycleWidget extends StatelessWidget {
   final Spent spent;
   final int index;
-  CycleWidget(this.spent, this.index);
+  final int cycleIndex;
+
+  CycleWidget({@required this.spent, @required this.cycleIndex, @required this.index});
 
   _onTapCycle(BuildContext context) {
     showModalBottomSheet(
@@ -15,7 +17,10 @@ class CycleWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
       ),
       isScrollControlled: true,
-      builder: (context) => CycleOptions(index),
+      builder: (context) => CycleOptions(
+        cycleIndex: cycleIndex,
+        index: index,
+      ),
     );
   }
 

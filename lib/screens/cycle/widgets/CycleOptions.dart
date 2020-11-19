@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plafin/screens/cycles/cycles_bloc.dart';
 import 'package:plafin/shared/components/ConfirmDialog.dart';
 
 class CycleOptions extends StatelessWidget {
+  final int cycleIndex;
   final int index;
-  CycleOptions(this.index);
+  CycleOptions({@required this.cycleIndex, @required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class CycleOptions extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: InkWell(
-                  onTap: () => print('edit $index'),
+                  onTap: () => print('edit $index in cycle $cycleIndex'),
                   child: ListTile(
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,7 +52,10 @@ class CycleOptions extends StatelessWidget {
                           Navigator.of(context).pop(),
                         },
                         confirm: () => {
-                          print('delete'),
+                          print('delete $index in cycle $cycleIndex'),
+                          BlocProvider.of<CyclesBloc>(context).add(
+                            DeleteSpentInCycleEvent(index: index, cycleIndex: cycleIndex),
+                          ),
                           Navigator.of(context).pop(),
                           Navigator.of(context).pop(),
                         },
