@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plafin/entities/cycle.dart';
-import 'package:plafin/entities/spent.dart';
 import 'package:plafin/screens/cycle/widgets/CycleFloatingActionButton.dart';
+import 'package:plafin/screens/cycle/widgets/CycleWidget.dart';
 import 'package:plafin/screens/cycle/widgets/Empty.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
 import 'package:plafin/shared/components/CommonAppBar.dart';
+import 'package:plafin/shared/components/ConfirmDialog.dart';
 import 'package:plafin/shared/utils/formatUtils.dart';
 
 class CyclePage extends StatelessWidget {
@@ -24,13 +25,27 @@ class CyclePage extends StatelessWidget {
       } else {
         item = cyclesState?.cycles[index];
       }
+
       return Scaffold(
         appBar: CommonAppBar(title: '${item.date}', actions: <Widget>[
           FlatButton(
             textColor: Colors.white,
             onPressed: () {
-              BlocProvider.of<CyclesBloc>(context).add(DeleteCycleEvent(index: index));
-              Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ConfirmDialog(
+                    title: 'Deseja deletar esse ciclo?',
+                    content: 'Essa ação não pode ser desfeita',
+                    cancel: () => Navigator.of(context).pop(),
+                    confirm: () => {
+                      BlocProvider.of<CyclesBloc>(context).add(DeleteCycleEvent(index: index)),
+                      Navigator.of(context).pop(),
+                      Navigator.of(context).pop(),
+                    },
+                  );
+                },
+              );
             },
             child: Icon(Icons.delete),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
@@ -55,19 +70,7 @@ class CyclePage extends StatelessWidget {
                         ),
                       );
                     } else {
-                      Spent spent = item.spendings[index];
-                      return ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(spent.name),
-                            Text(
-                              FormatUtils.doubleValueToMoney(spent.value),
-                              style: TextStyle(color: spent.income ? Colors.green : Colors.deepOrangeAccent),
-                            ),
-                          ],
-                        ),
-                      );
+                      return CycleWidget(item.spendings[index], index);
                     }
                   },
                 ),
