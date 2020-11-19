@@ -2,15 +2,17 @@ import 'package:plafin/entities/spent.dart';
 
 class Cycle {
   String date;
-  double initialMoney;
+  double initialAmount;
+  double amount;
   List<Spent> spendings = <Spent>[];
 
-  Cycle({this.date, this.initialMoney, this.spendings});
+  Cycle({this.date, this.initialAmount, this.amount, this.spendings});
 
   static Cycle fromJson(Map<dynamic, dynamic> json) {
     Cycle cycle = Cycle();
     cycle.date = json['date'].toString();
-    cycle.initialMoney = json['initialMoney'];
+    cycle.initialAmount = json['initialAmount'];
+    cycle.amount = json['amount'];
     if (json.containsKey('spendings')) {
       var items = json['spendings'] as List;
       cycle.spendings = items.map((e) => Spent.fromJson(e)).toList();
@@ -22,7 +24,8 @@ class Cycle {
   Map toJson() {
     return {
       'date': date,
-      'initialMoney': initialMoney,
+      'initialAmount': initialAmount,
+      'amount': amount,
       'spendings': spendings,
     };
   }

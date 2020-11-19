@@ -47,7 +47,9 @@ class CyclesBloc extends HydratedBloc<CyclesEvent, CyclesState> {
 Stream<CyclesState> _handleAddSpentToCycleEvent(CyclesState currentState, AddSpentToCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
+  double value = event.income ? event.value : event.value * -1;
 
+  cycles[event.index].amount = cycles[event.index].amount + value;
   cycles[event.index].spendings.add(Spent(name: event.name, value: event.value, income: event.income));
   newState.cycles = cycles;
 
@@ -57,8 +59,12 @@ Stream<CyclesState> _handleAddSpentToCycleEvent(CyclesState currentState, AddSpe
 Stream<CyclesState> _handleAddCycleEvent(CyclesState currentState, AddCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
+  List<Spent> spendings = <Spent>[];
+  if (event.initialAmount > 0) {
+    spendings.add(Spent(income: true, name: 'Valor Inicial', value: event.initialAmount));
+  }
 
-  cycles.add(Cycle(date: event.date, initialMoney: event.initialMoney, spendings: <Spent>[]));
+  cycles.add(Cycle(date: event.date, initialAmount: event.initialAmount, amount: event.amount, spendings: spendings));
   newState.cycles = cycles;
 
   yield newState;
@@ -68,9 +74,10 @@ abstract class CyclesEvent {}
 
 class AddCycleEvent extends CyclesEvent {
   String date;
-  double initialMoney;
+  double initialAmount;
+  double amount;
 
-  AddCycleEvent({@required this.date, @required this.initialMoney});
+  AddCycleEvent({@required this.date, @required this.initialAmount, @required this.amount});
 }
 
 class AddSpentToCycleEvent extends CyclesEvent {

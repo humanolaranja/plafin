@@ -19,6 +19,8 @@ class CyclesPage extends StatelessWidget {
         floatingActionButton: CyclesFloatingActionButton(),
         body: SafeArea(
           child: ListView.separated(
+            reverse: true,
+            shrinkWrap: true,
             itemCount: cyclesState?.cycles?.length ?? 0,
             separatorBuilder: (BuildContext context, int index) => Divider(),
             itemBuilder: (BuildContext context, int index) {

@@ -27,22 +27,31 @@ class CyclePage extends StatelessWidget {
                   child: Empty(),
                 )
               : ListView.separated(
-                  itemCount: item.spendings.length,
+                  itemCount: item.spendings.length + 1,
                   separatorBuilder: (BuildContext context, int index) => Divider(),
                   itemBuilder: (BuildContext context, int index) {
-                    Spent spent = item.spendings[index];
-                    return ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(spent.name),
-                          Text(
-                            FormatUtils.doubleValueToMoney(spent.value),
-                            style: TextStyle(color: spent.income ? Colors.green : Colors.deepOrangeAccent),
-                          ),
-                        ],
-                      ),
-                    );
+                    if (index == item.spendings.length) {
+                      return ListTile(
+                        title: Container(
+                          alignment: Alignment.centerRight,
+                          child: Text(FormatUtils.doubleValueToMoney(item.amount)),
+                        ),
+                      );
+                    } else {
+                      Spent spent = item.spendings[index];
+                      return ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(spent.name),
+                            Text(
+                              FormatUtils.doubleValueToMoney(spent.value),
+                              style: TextStyle(color: spent.income ? Colors.green : Colors.deepOrangeAccent),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
                 ),
         ),

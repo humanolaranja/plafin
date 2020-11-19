@@ -12,6 +12,7 @@ class NewCyclePage extends StatefulWidget {
 
 class _NewCyclePageState extends State<NewCyclePage> {
   DateTime selectedDate = DateTime.now();
+  double initialAmount = 0;
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(context: context, initialDate: selectedDate, firstDate: DateTime(2015, 8), lastDate: DateTime(2101));
@@ -49,7 +50,7 @@ class _NewCyclePageState extends State<NewCyclePage> {
                 child: RaisedButton(
                   onPressed: () => {
                     BlocProvider.of<CyclesBloc>(context).add(
-                      AddCycleEvent(initialMoney: 0, date: date),
+                      AddCycleEvent(initialAmount: initialAmount, amount: initialAmount, date: date),
                     ),
                     Navigator.of(context).pop()
                   },
