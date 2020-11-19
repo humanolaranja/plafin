@@ -63,10 +63,13 @@ class CyclePage extends StatelessWidget {
                   separatorBuilder: (BuildContext context, int spentIndex) => Divider(),
                   itemBuilder: (BuildContext context, int spentIndex) {
                     if (spentIndex == item.spendings.length) {
-                      return ListTile(
-                        title: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text(FormatUtils.doubleValueToMoney(item.amount)),
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 80),
+                        child: ListTile(
+                          title: Container(
+                            alignment: Alignment.centerRight,
+                            child: Text(FormatUtils.doubleValueToMoney(item.amount)),
+                          ),
                         ),
                       );
                     } else {
