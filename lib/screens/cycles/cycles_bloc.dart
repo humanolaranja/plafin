@@ -87,9 +87,11 @@ Stream<CyclesState> _handleEditSpentInCycleEvent(CyclesState currentState, EditS
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   Spent spent = cycles[event.cycleIndex].spendings[event.index];
-  double value = spent.income ? spent.value : spent.value * -1;
+  double oldValue = spent.income ? spent.value : spent.value * -1;
+  double newValue = event.income ? event.value : event.value * -1;
 
-  cycles[event.cycleIndex].amount = cycles[event.cycleIndex].amount + value;
+  cycles[event.cycleIndex].amount = cycles[event.cycleIndex].amount - oldValue;
+  cycles[event.cycleIndex].amount = cycles[event.cycleIndex].amount + newValue;
   cycles[event.cycleIndex].spendings[event.index].income = event.income;
   cycles[event.cycleIndex].spendings[event.index].name = event.name;
   cycles[event.cycleIndex].spendings[event.index].value = event.value;
