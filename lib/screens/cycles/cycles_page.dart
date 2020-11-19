@@ -25,7 +25,7 @@ class CyclesPage extends StatelessWidget {
             separatorBuilder: (BuildContext context, int index) => Divider(),
             itemBuilder: (BuildContext context, int index) {
               Cycle item = cyclesState?.cycles[index];
-              return GestureDetector(
+              return InkWell(
                 onLongPress: () => showBottomSheet(context: context, builder: (context) => NewCyclePage()),
                 onTap: () => Routes().navigateToCyclePage(context, CyclePageArguments(id: index)),
                 child: ListTile(
