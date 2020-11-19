@@ -2,6 +2,8 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plafin/routes.dart';
+import 'package:plafin/screens/cycle/cycle_page.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
 
 class NewCyclePage extends StatefulWidget {
@@ -15,6 +17,14 @@ class _NewCyclePageState extends State<NewCyclePage> {
   final String prefixValue = 'R\$ ';
   DateTime selectedDate = DateTime.now();
   double initialAmount = 0.0;
+
+  _createCycle(BuildContext context, double amount, String date, int index) {
+    BlocProvider.of<CyclesBloc>(context).add(
+      AddCycleEvent(amount: amount ?? 0, date: date),
+    );
+    Navigator.of(context).pop();
+    Routes().navigateToCyclePage(context, CyclePageArguments(id: index));
+  }
 
   _parseValue(String value) {
     return double.tryParse(value.replaceAll('.', '').replaceAll(',', '.').replaceAll(prefixValue, '')) ?? 0;
@@ -72,19 +82,16 @@ class _NewCyclePageState extends State<NewCyclePage> {
                     child: Text(date),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 48,
-                  child: RaisedButton(
-                    onPressed: () => {
-                      BlocProvider.of<CyclesBloc>(context).add(
-                        AddCycleEvent(amount: initialAmount ?? 0, date: date),
-                      ),
-                      Navigator.of(context).pop()
-                    },
-                    child: Text("Criar"),
-                  ),
-                )
+                BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
+                  return Container(
+                    width: double.infinity,
+                    height: 48,
+                    child: RaisedButton(
+                      onPressed: () => _createCycle(context, initialAmount, date, cyclesState.cycles.length),
+                      child: Text("Criar"),
+                    ),
+                  );
+                })
               ],
             ),
           ),
