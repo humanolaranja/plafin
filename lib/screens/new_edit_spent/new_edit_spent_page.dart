@@ -65,82 +65,84 @@ class _NewEditSpentPageState extends State<NewEditSpentPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Container(
-          padding: MediaQuery.of(context).viewInsets,
-          width: MediaQuery.of(context).size.width,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    initialValue: name,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText: 'Nome',
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Container(
+            padding: MediaQuery.of(context).viewInsets,
+            width: MediaQuery.of(context).size.width,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: TextFormField(
+                      initialValue: name,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        hintText: 'Nome',
+                      ),
+                      onChanged: (newName) {
+                        setState(() {
+                          name = newName;
+                        });
+                      },
+                      validator: (name) {
+                        return _requiredField(name);
+                      },
                     ),
-                    onChanged: (newName) {
-                      setState(() {
-                        name = newName;
-                      });
-                    },
-                    validator: (name) {
-                      return _requiredField(name);
-                    },
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    initialValue: FormatUtils.doubleValueToMoney(value),
-                    decoration: InputDecoration(
-                      hintText: 'Valor',
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: TextFormField(
+                      initialValue: FormatUtils.doubleValueToMoney(value),
+                      decoration: InputDecoration(
+                        hintText: 'Valor',
+                      ),
+                      inputFormatters: [
+                        CurrencyTextInputFormatter(
+                          decimalDigits: 2,
+                          symbol: prefixValue,
+                          locale: 'pt-BR',
+                        )
+                      ],
+                      keyboardType: TextInputType.number,
+                      onChanged: (newValue) {
+                        setState(() {
+                          value = _parseValue(newValue);
+                        });
+                      },
+                      validator: (value) {
+                        return _requiredField(_parseValue(value).toString());
+                      },
                     ),
-                    inputFormatters: [
-                      CurrencyTextInputFormatter(
-                        decimalDigits: 2,
-                        symbol: prefixValue,
-                        locale: 'pt-BR',
-                      )
-                    ],
-                    keyboardType: TextInputType.number,
-                    onChanged: (newValue) {
-                      setState(() {
-                        value = _parseValue(newValue);
-                      });
-                    },
-                    validator: (value) {
-                      return _requiredField(_parseValue(value).toString());
-                    },
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: CheckboxListTile(
-                    title: Text('Receita'),
-                    value: income,
-                    onChanged: (isIncome) {
-                      setState(() {
-                        income = isIncome;
-                      });
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: CheckboxListTile(
+                      title: Text('Receita'),
+                      value: income,
+                      onChanged: (isIncome) {
+                        setState(() {
+                          income = isIncome;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 48,
-                  child: RaisedButton(
-                    onPressed: () => widget.index == null ? _createNewSpent(context) : _editSpent(context),
-                    child: Text("Confirmar"),
-                  ),
-                )
-              ],
+                  Container(
+                    width: double.infinity,
+                    height: 48,
+                    child: RaisedButton(
+                      onPressed: () => widget.index == null ? _createNewSpent(context) : _editSpent(context),
+                      child: Text("Confirmar"),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

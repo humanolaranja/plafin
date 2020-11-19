@@ -33,58 +33,60 @@ class _NewCyclePageState extends State<NewCyclePage> {
   Widget build(BuildContext context) {
     String date = formatDate(selectedDate, [dd, '/', mm, '/', yyyy]);
     return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Container(
-          padding: MediaQuery.of(context).viewInsets,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Saldo Inicial',
-                  ),
-                  inputFormatters: [
-                    CurrencyTextInputFormatter(
-                      decimalDigits: 2,
-                      symbol: prefixValue,
-                      locale: 'pt-BR',
-                    )
-                  ],
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      initialAmount = _parseValue(value);
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: FlatButton(
-                  onPressed: () => _selectDate(context),
-                  child: Text(date),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                height: 48,
-                child: RaisedButton(
-                  onPressed: () => {
-                    BlocProvider.of<CyclesBloc>(context).add(
-                      AddCycleEvent(amount: initialAmount ?? 0, date: date),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Container(
+            padding: MediaQuery.of(context).viewInsets,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Saldo Inicial',
                     ),
-                    Navigator.of(context).pop()
-                  },
-                  child: Text("Criar"),
+                    inputFormatters: [
+                      CurrencyTextInputFormatter(
+                        decimalDigits: 2,
+                        symbol: prefixValue,
+                        locale: 'pt-BR',
+                      )
+                    ],
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        initialAmount = _parseValue(value);
+                      });
+                    },
+                  ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: FlatButton(
+                    onPressed: () => _selectDate(context),
+                    child: Text(date),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 48,
+                  child: RaisedButton(
+                    onPressed: () => {
+                      BlocProvider.of<CyclesBloc>(context).add(
+                        AddCycleEvent(amount: initialAmount ?? 0, date: date),
+                      ),
+                      Navigator.of(context).pop()
+                    },
+                    child: Text("Criar"),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
