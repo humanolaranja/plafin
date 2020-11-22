@@ -14,26 +14,29 @@ class CyclesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
+      BlocProvider.of<CyclesBloc>(context).add(GetCyclesSavedEvent());
       return Scaffold(
         appBar: CommonAppBar(title: "Ciclos"),
         floatingActionButton: CyclesFloatingActionButton(),
         body: SafeArea(
-          child: ListView.separated(
-            reverse: true,
-            shrinkWrap: true,
-            itemCount: cyclesState?.cycles?.length ?? 0,
-            separatorBuilder: (BuildContext context, int index) => Divider(),
-            itemBuilder: (BuildContext context, int index) {
-              Cycle item = cyclesState?.cycles[index];
-              return InkWell(
-                onLongPress: () => showBottomSheet(context: context, builder: (context) => NewCyclePage()),
-                onTap: () => Routes().navigateToCyclePage(context, CyclePageArguments(id: index)),
-                child: ListTile(
-                  title: Text(item.date),
+          child: cyclesState.loading
+              ? Center(child: CircularProgressIndicator())
+              : ListView.separated(
+                  reverse: true,
+                  shrinkWrap: true,
+                  itemCount: cyclesState?.cycles?.length ?? 0,
+                  separatorBuilder: (BuildContext context, int index) => Divider(),
+                  itemBuilder: (BuildContext context, int index) {
+                    Cycle item = cyclesState?.cycles[index];
+                    return InkWell(
+                      onLongPress: () => showBottomSheet(context: context, builder: (context) => NewCyclePage()),
+                      onTap: () => Routes().navigateToCyclePage(context, CyclePageArguments(id: index)),
+                      child: ListTile(
+                        title: Text(item.date),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       );
     });
