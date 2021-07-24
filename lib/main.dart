@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:plafin/routes.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
 
@@ -13,6 +14,8 @@ void main() async {
       ],
       child: MaterialApp(
         title: 'PlaFin',
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        supportedLocales: [Locale('pt', 'BR')],
         initialRoute: Routes.homePagePath,
         routes: Routes().getDefault(),
         theme: ThemeData(

@@ -135,12 +135,24 @@ Stream<CyclesState> _handleCopyCycleEvent(
     CyclesState currentState, CopyCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
+  List<Spent> spendings = [];
+
+  cycles[event.index].spendings.forEach((element) {
+    spendings.add(
+      Spent(
+        done: false,
+        income: element.income,
+        name: element.name,
+        value: element.value,
+      ),
+    );
+  });
 
   cycles.add(
     Cycle(
       date: event.date,
       amount: cycles[event.index].amount,
-      spendings: cycles[event.index].spendings,
+      spendings: spendings,
     ),
   );
   newState.cycles = cycles;
