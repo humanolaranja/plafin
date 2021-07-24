@@ -7,7 +7,8 @@ import 'package:plafin/services/cycles_service.dart';
 class CyclesBloc extends Bloc<CyclesEvent, CyclesState> {
   CyclesService _cyclesService;
 
-  CyclesBloc({cyclesService}) : super(CyclesState(cycles: <Cycle>[], loading: true)) {
+  CyclesBloc({cyclesService})
+      : super(CyclesState(cycles: <Cycle>[], loading: true)) {
     this._cyclesService = cyclesService ?? CyclesService();
   }
 
@@ -25,6 +26,9 @@ class CyclesBloc extends Bloc<CyclesEvent, CyclesState> {
     if (event is DeleteCycleEvent) {
       return _handleDeleteCycleEvent(this.state, event);
     }
+    if (event is CopyCycleEvent) {
+      return _handleCopyCycleEvent(this.state, event);
+    }
     if (event is DeleteSpentInCycleEvent) {
       return _handleDeleteSpentInCycleEvent(this.state, event);
     }
@@ -38,7 +42,8 @@ class CyclesBloc extends Bloc<CyclesEvent, CyclesState> {
   }
 }
 
-Stream<CyclesState> _handleGetCyclesSavedEvent(CyclesState currentState, GetCyclesSavedEvent event) async* {
+Stream<CyclesState> _handleGetCyclesSavedEvent(
+    CyclesState currentState, GetCyclesSavedEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   cycles = await CyclesBloc()._cyclesService.getCycles();
@@ -48,20 +53,23 @@ Stream<CyclesState> _handleGetCyclesSavedEvent(CyclesState currentState, GetCycl
   yield newState;
 }
 
-Stream<CyclesState> _handleAddSpentToCycleEvent(CyclesState currentState, AddSpentToCycleEvent event) async* {
+Stream<CyclesState> _handleAddSpentToCycleEvent(
+    CyclesState currentState, AddSpentToCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   double value = event.income ? event.value : event.value * -1;
 
   cycles[event.index].amount = cycles[event.index].amount + value;
-  cycles[event.index].spendings.add(Spent(name: event.name, value: event.value, income: event.income, done: false));
+  cycles[event.index].spendings.add(Spent(
+      name: event.name, value: event.value, income: event.income, done: false));
   newState.cycles = cycles;
   await CyclesBloc()._cyclesService.saveCycles(cycles);
 
   yield newState;
 }
 
-Stream<CyclesState> _handleDeleteSpentInCycleEvent(CyclesState currentState, DeleteSpentInCycleEvent event) async* {
+Stream<CyclesState> _handleDeleteSpentInCycleEvent(
+    CyclesState currentState, DeleteSpentInCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   Spent spent = cycles[event.cycleIndex].spendings[event.index];
@@ -80,7 +88,8 @@ Stream<CyclesState> _handleDeleteSpentInCycleEvent(CyclesState currentState, Del
   yield newState;
 }
 
-Stream<CyclesState> _handleEditSpentInCycleEvent(CyclesState currentState, EditSpentInCycleEvent event) async* {
+Stream<CyclesState> _handleEditSpentInCycleEvent(
+    CyclesState currentState, EditSpentInCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   Spent spent = cycles[event.cycleIndex].spendings[event.index];
@@ -98,7 +107,8 @@ Stream<CyclesState> _handleEditSpentInCycleEvent(CyclesState currentState, EditS
   yield newState;
 }
 
-Stream<CyclesState> _handleDoneSpentInCycleEvent(CyclesState currentState, DoneSpentInCycleEvent event) async* {
+Stream<CyclesState> _handleDoneSpentInCycleEvent(
+    CyclesState currentState, DoneSpentInCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
 
@@ -109,7 +119,8 @@ Stream<CyclesState> _handleDoneSpentInCycleEvent(CyclesState currentState, DoneS
   yield newState;
 }
 
-Stream<CyclesState> _handleDeleteCycleEvent(CyclesState currentState, DeleteCycleEvent event) async* {
+Stream<CyclesState> _handleDeleteCycleEvent(
+    CyclesState currentState, DeleteCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
 
@@ -120,15 +131,36 @@ Stream<CyclesState> _handleDeleteCycleEvent(CyclesState currentState, DeleteCycl
   yield newState;
 }
 
-Stream<CyclesState> _handleAddCycleEvent(CyclesState currentState, AddCycleEvent event) async* {
+Stream<CyclesState> _handleCopyCycleEvent(
+    CyclesState currentState, CopyCycleEvent event) async* {
+  CyclesState newState = currentState.cloneAs(CyclesState());
+  List<Cycle> cycles = newState.cycles.toList();
+
+  cycles.add(
+    Cycle(
+      date: event.date,
+      amount: cycles[event.index].amount,
+      spendings: cycles[event.index].spendings,
+    ),
+  );
+  newState.cycles = cycles;
+  await CyclesBloc()._cyclesService.saveCycles(cycles);
+
+  yield newState;
+}
+
+Stream<CyclesState> _handleAddCycleEvent(
+    CyclesState currentState, AddCycleEvent event) async* {
   CyclesState newState = currentState.cloneAs(CyclesState());
   List<Cycle> cycles = newState.cycles.toList();
   List<Spent> spendings = <Spent>[];
   if (event.amount > 0) {
-    spendings.add(Spent(income: true, name: 'Saldo Inicial', value: event.amount, done: false));
+    spendings.add(Spent(
+        income: true, name: 'Saldo Inicial', value: event.amount, done: false));
   }
 
-  cycles.add(Cycle(date: event.date, amount: event.amount, spendings: spendings));
+  cycles
+      .add(Cycle(date: event.date, amount: event.amount, spendings: spendings));
   newState.cycles = cycles;
   await CyclesBloc()._cyclesService.saveCycles(cycles);
 
@@ -154,13 +186,24 @@ class AddSpentToCycleEvent extends CyclesEvent {
   double value;
   bool income;
 
-  AddSpentToCycleEvent({@required this.index, @required this.name, @required this.value, @required this.income});
+  AddSpentToCycleEvent(
+      {@required this.index,
+      @required this.name,
+      @required this.value,
+      @required this.income});
 }
 
 class DeleteCycleEvent extends CyclesEvent {
   int index;
 
   DeleteCycleEvent({@required this.index});
+}
+
+class CopyCycleEvent extends CyclesEvent {
+  int index;
+  String date;
+
+  CopyCycleEvent({@required this.index, @required this.date});
 }
 
 class DeleteSpentInCycleEvent extends CyclesEvent {
@@ -177,7 +220,12 @@ class EditSpentInCycleEvent extends CyclesEvent {
   double value;
   bool income;
 
-  EditSpentInCycleEvent({@required this.cycleIndex, @required this.index, @required this.name, @required this.value, @required this.income});
+  EditSpentInCycleEvent(
+      {@required this.cycleIndex,
+      @required this.index,
+      @required this.name,
+      @required this.value,
+      @required this.income});
 }
 
 class DoneSpentInCycleEvent extends CyclesEvent {
@@ -185,7 +233,8 @@ class DoneSpentInCycleEvent extends CyclesEvent {
   int index;
   bool done;
 
-  DoneSpentInCycleEvent({@required this.cycleIndex, @required this.index, @required this.done});
+  DoneSpentInCycleEvent(
+      {@required this.cycleIndex, @required this.index, @required this.done});
 }
 
 class CyclesState {

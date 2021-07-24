@@ -13,24 +13,32 @@ class CyclesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
+    return BlocBuilder<CyclesBloc, CyclesState>(
+        builder: (context, cyclesState) {
       BlocProvider.of<CyclesBloc>(context).add(GetCyclesSavedEvent());
       return Scaffold(
         appBar: CommonAppBar(title: "Ciclos"),
         floatingActionButton: CyclesFloatingActionButton(),
         body: SafeArea(
           child: cyclesState.loading
-              ? Center(child: CircularProgressIndicator())
+              ? Center(
+                  child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.deepOrange),
+                ))
               : ListView.separated(
-                  reverse: true,
                   shrinkWrap: true,
                   itemCount: cyclesState?.cycles?.length ?? 0,
-                  separatorBuilder: (BuildContext context, int index) => Divider(),
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(),
                   itemBuilder: (BuildContext context, int index) {
-                    Cycle item = cyclesState?.cycles[index];
+                    int invertedIndex = cyclesState.cycles.length - 1 - index;
+                    Cycle item = cyclesState?.cycles[invertedIndex];
                     return InkWell(
-                      onLongPress: () => showBottomSheet(context: context, builder: (context) => NewCyclePage()),
-                      onTap: () => Routes().navigateToCyclePage(context, CyclePageArguments(id: index)),
+                      onLongPress: () => showBottomSheet(
+                          context: context,
+                          builder: (context) => NewCyclePage()),
+                      onTap: () => Routes().navigateToCyclePage(
+                          context, CyclePageArguments(id: invertedIndex)),
                       child: ListTile(
                         title: Text(item.date),
                       ),

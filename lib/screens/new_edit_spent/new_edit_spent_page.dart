@@ -11,7 +11,14 @@ class NewEditSpentPage extends StatefulWidget {
   final double value;
   final bool income;
 
-  const NewEditSpentPage({@required this.cycleIndex, this.index, this.name, this.value, this.income, Key key}) : super(key: key);
+  const NewEditSpentPage(
+      {@required this.cycleIndex,
+      this.index,
+      this.name,
+      this.value,
+      this.income,
+      Key key})
+      : super(key: key);
 
   @override
   _NewEditSpentPageState createState() => _NewEditSpentPageState();
@@ -42,7 +49,8 @@ class _NewEditSpentPageState extends State<NewEditSpentPage> {
   _createNewSpent(BuildContext context) {
     if (_formKey.currentState.validate()) {
       BlocProvider.of<CyclesBloc>(context).add(
-        AddSpentToCycleEvent(index: widget.cycleIndex, name: name, value: value, income: income),
+        AddSpentToCycleEvent(
+            index: widget.cycleIndex, name: name, value: value, income: income),
       );
       Navigator.of(context).pop();
     }
@@ -51,7 +59,12 @@ class _NewEditSpentPageState extends State<NewEditSpentPage> {
   _editSpent(BuildContext context) {
     if (_formKey.currentState.validate()) {
       BlocProvider.of<CyclesBloc>(context).add(
-        EditSpentInCycleEvent(cycleIndex: widget.cycleIndex, index: widget.index, name: name, value: value, income: income),
+        EditSpentInCycleEvent(
+            cycleIndex: widget.cycleIndex,
+            index: widget.index,
+            name: name,
+            value: value,
+            income: income),
       );
       Navigator.of(context).pop();
       Navigator.of(context).pop();
@@ -59,7 +72,11 @@ class _NewEditSpentPageState extends State<NewEditSpentPage> {
   }
 
   _parseValue(String value) {
-    return double.tryParse(value.replaceAll('.', '').replaceAll(',', '.').replaceAll(prefixValue, '')) ?? 0;
+    return double.tryParse(value
+            .replaceAll('.', '')
+            .replaceAll(',', '.')
+            .replaceAll(prefixValue, '')) ??
+        0;
   }
 
   @override
@@ -136,8 +153,10 @@ class _NewEditSpentPageState extends State<NewEditSpentPage> {
                   Container(
                     width: double.infinity,
                     height: 48,
-                    child: RaisedButton(
-                      onPressed: () => widget.index == null ? _createNewSpent(context) : _editSpent(context),
+                    child: ElevatedButton(
+                      onPressed: () => widget.index == null
+                          ? _createNewSpent(context)
+                          : _editSpent(context),
                       child: Text("Confirmar"),
                     ),
                   )

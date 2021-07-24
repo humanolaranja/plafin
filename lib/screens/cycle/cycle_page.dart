@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plafin/entities/cycle.dart';
+import 'package:plafin/screens/copy_cycle/copy_cycle_page.dart';
 import 'package:plafin/screens/cycle/widgets/CycleFloatingActionButton.dart';
 import 'package:plafin/screens/cycle/widgets/CycleWidget.dart';
 import 'package:plafin/screens/cycle/widgets/Empty.dart';
@@ -16,11 +17,13 @@ class CyclePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final CyclePageArguments args = ModalRoute.of(context).settings.arguments;
 
-    return BlocBuilder<CyclesBloc, CyclesState>(builder: (context, cyclesState) {
+    return BlocBuilder<CyclesBloc, CyclesState>(
+        builder: (context, cyclesState) {
       int index = args.id;
       Cycle item;
 
-      if (cyclesState.cycles.isEmpty || !cyclesState.cycles.asMap().containsKey(index)) {
+      if (cyclesState.cycles.isEmpty ||
+          !cyclesState.cycles.asMap().containsKey(index)) {
         item = Cycle(amount: 0, date: '', spendings: []);
       } else {
         item = cyclesState?.cycles[index];
@@ -28,8 +31,37 @@ class CyclePage extends StatelessWidget {
 
       return Scaffold(
         appBar: CommonAppBar(title: '${item.date}', actions: <Widget>[
-          FlatButton(
-            textColor: Colors.white,
+          TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ConfirmDialog(
+                    title: 'Copiar esse ciclo para um novo mês?',
+                    content:
+                        'Os valores serão mantidos, mas poderão ser editados',
+                    cancel: () => Navigator.of(context).pop(),
+                    confirm: () => {
+                      Navigator.of(context).pop(),
+                      showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isScrollControlled: true,
+                        builder: (context) => CopyCyclePage(baseIndex: index),
+                      )
+                    },
+                  );
+                },
+              );
+            },
+            child: Icon(
+              Icons.content_copy,
+              color: Colors.white,
+            ),
+          ),
+          TextButton(
             onPressed: () {
               showDialog(
                 context: context,
@@ -39,7 +71,8 @@ class CyclePage extends StatelessWidget {
                     content: 'Essa ação não pode ser desfeita',
                     cancel: () => Navigator.of(context).pop(),
                     confirm: () => {
-                      BlocProvider.of<CyclesBloc>(context).add(DeleteCycleEvent(index: index)),
+                      BlocProvider.of<CyclesBloc>(context)
+                          .add(DeleteCycleEvent(index: index)),
                       Navigator.of(context).pop(),
                       Navigator.of(context).pop(),
                     },
@@ -47,8 +80,10 @@ class CyclePage extends StatelessWidget {
                 },
               );
             },
-            child: Icon(Icons.delete),
-            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
           ),
         ]),
         floatingActionButton: CycleFloatingActionButton(index),
@@ -60,7 +95,8 @@ class CyclePage extends StatelessWidget {
                 )
               : ListView.separated(
                   itemCount: item.spendings.length + 1,
-                  separatorBuilder: (BuildContext context, int spentIndex) => Divider(),
+                  separatorBuilder: (BuildContext context, int spentIndex) =>
+                      Divider(),
                   itemBuilder: (BuildContext context, int spentIndex) {
                     if (spentIndex == item.spendings.length) {
                       return Padding(
@@ -68,7 +104,8 @@ class CyclePage extends StatelessWidget {
                         child: ListTile(
                           title: Container(
                             alignment: Alignment.centerRight,
-                            child: Text(FormatUtils.doubleValueToMoney(item.amount)),
+                            child: Text(
+                                FormatUtils.doubleValueToMoney(item.amount)),
                           ),
                         ),
                       );

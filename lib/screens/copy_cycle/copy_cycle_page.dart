@@ -1,4 +1,3 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,32 +5,30 @@ import 'package:plafin/routes.dart';
 import 'package:plafin/screens/cycle/cycle_page.dart';
 import 'package:plafin/screens/cycles/cycles_bloc.dart';
 
-class NewCyclePage extends StatefulWidget {
-  const NewCyclePage({Key key}) : super(key: key);
+class CopyCyclePage extends StatefulWidget {
+  final int baseIndex;
+
+  const CopyCyclePage({@required this.baseIndex, Key key}) : super(key: key);
 
   @override
-  _NewCyclePageState createState() => _NewCyclePageState();
+  _CopyCyclePageState createState() => _CopyCyclePageState();
 }
 
-class _NewCyclePageState extends State<NewCyclePage> {
-  final String prefixValue = 'R\$ ';
+class _CopyCyclePageState extends State<CopyCyclePage> {
   DateTime selectedDate = DateTime.now();
-  double initialAmount = 0.0;
 
-  _createCycle(BuildContext context, double amount, String date, int index) {
+  _copyCycle(BuildContext context, int lastIndex) {
+    String date = formatDate(selectedDate, [dd, '/', mm, '/', yyyy]);
+
     BlocProvider.of<CyclesBloc>(context).add(
-      AddCycleEvent(amount: amount ?? 0, date: date),
+      CopyCycleEvent(index: widget.baseIndex, date: date),
     );
     Navigator.of(context).pop();
-    Routes().navigateToCyclePage(context, CyclePageArguments(id: index));
-  }
-
-  _parseValue(String value) {
-    return double.tryParse(value
-            .replaceAll('.', '')
-            .replaceAll(',', '.')
-            .replaceAll(prefixValue, '')) ??
-        0;
+    Navigator.of(context).pop();
+    Routes().navigateToCyclePage(
+      context,
+      CyclePageArguments(id: lastIndex),
+    );
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -63,32 +60,8 @@ class _NewCyclePageState extends State<NewCyclePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Saldo Inicial',
-                    ),
-                    inputFormatters: [
-                      CurrencyTextInputFormatter(
-                        decimalDigits: 2,
-                        symbol: prefixValue,
-                        locale: 'pt-BR',
-                      )
-                    ],
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      setState(() {
-                        initialAmount = _parseValue(value);
-                      });
-                    },
-                  ),
-                ),
-                Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: TextButton(
-                    style: TextButton.styleFrom(
-                      primary: Colors.white,
-                    ),
                     onPressed: () => _selectDate(context),
                     child: Text(date),
                   ),
@@ -99,8 +72,8 @@ class _NewCyclePageState extends State<NewCyclePage> {
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: () => _createCycle(context, initialAmount,
-                          date, cyclesState.cycles.length),
+                      onPressed: () =>
+                          _copyCycle(context, cyclesState.cycles.length),
                       child: Text("Criar"),
                     ),
                   );

@@ -20,10 +20,40 @@ void main() async {
           primaryColor: Colors.deepOrange,
           accentColor: Colors.deepOrangeAccent,
           visualDensity: VisualDensity.standard,
-          floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Colors.deepOrange,
+            foregroundColor: Colors.white,
+          ),
+          colorScheme: ColorScheme.dark(
+            primary: Colors.deepOrange,
+            onPrimary: Colors.white,
+          ),
           buttonColor: Colors.deepOrange,
           toggleableActiveColor: Colors.deepOrange,
           unselectedWidgetColor: Colors.deepOrange,
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(primary: Colors.deepOrange),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.deepOrange,
+              textStyle: TextStyle(color: Colors.white),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(2)),
+              ),
+            ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepOrange),
+            ),
+          ),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.deepOrange,
+            selectionColor: Colors.deepOrange,
+            selectionHandleColor: Colors.deepOrange,
+          ),
         ),
       ),
     ),
