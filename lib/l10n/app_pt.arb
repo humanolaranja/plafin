@@ -1,0 +1,113 @@
+{
+  "@@locale": "pt",
+  "appName": "Plafin",
+  "appTagline": "Planejamento financeiro",
+  "cyclesTitle": "Ciclos",
+  "newCycle": "Novo ciclo",
+  "cyclesEmptyTitle": "Nenhum ciclo ainda",
+  "cyclesEmptyBody": "Crie um ciclo a partir do dia em que você recebe seu salário e registre suas receitas e despesas.",
+  "cycleCreateAction": "Criar ciclo",
+  "cycleEditTitle": "Editar ciclo",
+  "cycleCopyTitle": "Copiar ciclo",
+  "cycleCopyBody": "Os itens serão copiados como não realizados.",
+  "cycleDeleteTitle": "Excluir este ciclo?",
+  "cycleDeleteBody": "O ciclo e todos os seus itens serão removidos.",
+  "cycleDeleted": "Ciclo excluído",
+  "cycleName": "Nome (opcional)",
+  "cycleNameHint": "Ex.: Salário de novembro",
+  "cycleDate": "Data do ciclo",
+  "initialBalance": "Saldo inicial",
+  "itemDeleted": "Item excluído",
+  "undo": "Desfazer",
+  "save": "Salvar",
+  "create": "Criar",
+  "copy": "Copiar",
+  "cancel": "Cancelar",
+  "delete": "Excluir",
+  "edit": "Editar",
+  "close": "Fechar",
+  "retry": "Tentar novamente",
+  "loadError": "Não foi possível carregar seus dados.",
+  "addItem": "Adicionar item",
+  "newItemTitle": "Novo item",
+  "editItemTitle": "Editar item",
+  "itemName": "Nome",
+  "itemAmount": "Valor",
+  "itemExpense": "Despesa",
+  "itemIncome": "Receita",
+  "requiredField": "Preenchimento obrigatório",
+  "amountMustBePositive": "Informe um valor maior que zero",
+  "summaryBalance": "Saldo do ciclo",
+  "summaryIncome": "Receitas",
+  "summaryExpenses": "Despesas",
+  "summaryReceived": "Recebido",
+  "summaryPaid": "Pago",
+  "summaryPending": "A pagar",
+  "progressDone": "{done} de {total} realizados",
+  "@progressDone": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "itemsCount": "{count, plural, =0{Sem itens} =1{1 item} other{{count} itens}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "itemsEmptyTitle": "Sem itens neste ciclo",
+  "itemsEmptyBody": "Adicione suas receitas e despesas para acompanhar o saldo.",
+  "markDone": "Marcar como realizado",
+  "settings": "Configurações",
+  "appearance": "Aparência",
+  "theme": "Tema",
+  "themeSystem": "Sistema",
+  "themeLight": "Claro",
+  "themeDark": "Escuro",
+  "language": "Idioma",
+  "languageSystem": "Sistema",
+  "currency": "Moeda",
+  "dataSection": "Dados",
+  "exportBackup": "Exportar backup",
+  "exportBackupSubtitle": "Salva todos os seus ciclos em um arquivo JSON.",
+  "shareBackup": "Compartilhar backup",
+  "importBackup": "Importar backup",
+  "importBackupSubtitle": "Restaura ciclos a partir de um arquivo de backup.",
+  "exportSuccess": "Backup salvo.",
+  "exportFailed": "Não foi possível salvar o backup.",
+  "importPreviewTitle": "Importar backup",
+  "importPreviewBody": "O arquivo contém {cycles, plural, =1{1 ciclo} other{{cycles} ciclos}} e {items, plural, =1{1 item} other{{items} itens}}.",
+  "@importPreviewBody": {
+    "placeholders": {
+      "cycles": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "importReplace": "Substituir tudo",
+  "importReplaceHelp": "Apaga os dados atuais e usa os do arquivo.",
+  "importMerge": "Mesclar",
+  "importMergeHelp": "Mantém os dados atuais e adiciona os do arquivo. Ciclos com o mesmo identificador são substituídos.",
+  "importDone": "Backup importado.",
+  "importInvalidFile": "Arquivo inválido. Escolha um backup do Plafin.",
+  "importNewerVersion": "Esse backup foi criado por uma versão mais nova do Plafin.",
+  "aboutSection": "Sobre",
+  "versionLabel": "Versão {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
+}
