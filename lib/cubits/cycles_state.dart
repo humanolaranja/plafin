@@ -62,6 +62,18 @@ class CyclesState extends Equatable {
     return [for (final e in indexed) e.$2];
   }
 
+  /// Ciclo em andamento: o mais recente com data até [today]; se todos forem
+  /// futuros, o mais próximo.
+  Cycle? currentCycle(DateTime today) {
+    final sorted = sortedCycles;
+    if (sorted.isEmpty) return null;
+    final day = DateTime(today.year, today.month, today.day);
+    for (final c in sorted) {
+      if (!c.date.isAfter(day)) return c;
+    }
+    return sorted.last;
+  }
+
   Cycle? cycleById(String id) {
     for (final c in cycles) {
       if (c.id == id) return c;

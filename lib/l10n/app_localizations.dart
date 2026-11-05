@@ -497,7 +497,7 @@ abstract class AppLocalizations {
   /// No description provided for @importPreviewBody.
   ///
   /// In pt, this message translates to:
-  /// **'O arquivo contém {cycles, plural, =1{1 ciclo} other{{cycles} ciclos}} e {items, plural, =1{1 item} other{{items} itens}}.'**
+  /// **'O arquivo contém {cycles, plural, =0{0 ciclos} =1{1 ciclo} other{{cycles} ciclos}} e {items, plural, =0{0 itens} =1{1 item} other{{items} itens}}.'**
   String importPreviewBody(int cycles, int items);
 
   /// No description provided for @importReplace.
@@ -553,6 +553,42 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Versão {version}'**
   String versionLabel(String version);
+
+  /// No description provided for @homeCurrentCycle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ciclo atual'**
+  String get homeCurrentCycle;
+
+  /// No description provided for @homeWelcomeTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeje o seu próximo ciclo'**
+  String get homeWelcomeTitle;
+
+  /// No description provided for @homeWelcomeBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Organize receitas e despesas a partir do dia em que você recebe.'**
+  String get homeWelcomeBody;
+
+  /// No description provided for @timelineTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Linha do tempo'**
+  String get timelineTitle;
+
+  /// No description provided for @cyclesCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Nenhum ciclo} =1{1 ciclo} other{{count} ciclos}}'**
+  String cyclesCount(int count);
+
+  /// No description provided for @newCycleHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comece a partir do dia do pagamento'**
+  String get newCycleHint;
 }
 
 class _AppLocalizationsDelegate

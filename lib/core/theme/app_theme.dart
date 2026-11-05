@@ -70,6 +70,12 @@ abstract final class AppTheme {
   /// garantir contraste mínimo WCAG AA.
   static const brandOrange = Color(0xFFFF5A1F);
 
+  /// Gradiente do cabeçalho da home (mais claro que o do ícone para garantir
+  /// contraste >= 4.5:1 com [heroInk]) e a tinta escura usada sobre ele.
+  static const heroStart = Color(0xFFFF8E54);
+  static const heroEnd = Color(0xFFF46426);
+  static const heroInk = Color(0xFF1C130E);
+
   static const lightScheme = ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xFFC2410C),

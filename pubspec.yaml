@@ -36,6 +36,7 @@ flutter:
 
   assets:
     - assets/branding/logo_rounded.png
+    - assets/branding/icon_foreground.png
 
   fonts:
     - family: PlusJakartaSans

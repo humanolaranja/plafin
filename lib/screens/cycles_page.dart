@@ -1,177 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../app.dart';
 import '../cubits/cycles_cubit.dart';
-import '../core/format/format_context.dart';
-import '../core/theme/app_theme.dart';
-import '../data/cycle.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/common.dart';
 import '../widgets/cycle_form_sheet.dart';
+import '../widgets/home_hero.dart';
+import '../widgets/timeline.dart';
 import 'settings_page.dart';
 
-class CyclesPage extends StatelessWidget {
+class CyclesPage extends StatefulWidget {
   const CyclesPage({super.key});
 
-  Future<void> _createCycle(BuildContext context) async {
+  @override
+  State<CyclesPage> createState() => _CyclesPageState();
+}
+
+class _CyclesPageState extends State<CyclesPage> {
+  /// Enquanto o hero laranja está sob a barra de status, os ícones ficam
+  /// escuros; depois que ele sai da tela, seguem o tema.
+  bool _heroUnderStatusBar = true;
+
+  bool _onScroll(ScrollNotification n) {
+    if (n.depth != 0) return false;
+    final under = n.metrics.pixels < 40;
+    if (under != _heroUnderStatusBar) {
+      setState(() => _heroUnderStatusBar = under);
+    }
+    return false;
+  }
+
+  Future<void> _createCycle() async {
     final id = await showCycleForm(context, mode: CycleFormMode.create);
-    if (id != null && context.mounted) {
+    if (id != null && mounted) {
       Navigator.of(context).pushNamed(Routes.cycle, arguments: id);
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final state = context.watch<CyclesCubit>().state;
-    final cycles = state.sortedCycles;
-    final showFab = state.status == CyclesStatus.ready && cycles.isNotEmpty;
+  void _openCycle(String id) =>
+      Navigator.of(context).pushNamed(Routes.cycle, arguments: id);
 
-    return Scaffold(
-      floatingActionButton: showFab
-          ? FloatingActionButton.extended(
-              onPressed: () => _createCycle(context),
-              icon: const Icon(Icons.add_rounded),
-              label: Text(l10n.newCycle),
-            )
-          : null,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar.large(
-            title: Text(l10n.cyclesTitle),
-            actions: [
-              IconButton(
-                tooltip: l10n.settings,
-                icon: const Icon(Icons.settings_outlined),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => const SettingsPage()),
-                ),
-              ),
-              const SizedBox(width: 4),
-            ],
-          ),
-          switch (state.status) {
-            CyclesStatus.loading => const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            CyclesStatus.failure => SliverFillRemaining(
-              hasScrollBody: false,
-              child: EmptyState(
-                icon: Icons.error_outline_rounded,
-                title: l10n.loadError,
-                message: '',
-                action: FilledButton(
-                  onPressed: () => context.read<CyclesCubit>().load(),
-                  child: Text(l10n.retry),
-                ),
-              ),
-            ),
-            CyclesStatus.ready when cycles.isEmpty => SliverFillRemaining(
-              hasScrollBody: false,
-              child: EmptyState(
-                leading: const PlafinLogo(size: 96),
-                title: l10n.cyclesEmptyTitle,
-                message: l10n.cyclesEmptyBody,
-                action: FilledButton.icon(
-                  onPressed: () => _createCycle(context),
-                  icon: const Icon(Icons.add_rounded),
-                  label: Text(l10n.cycleCreateAction),
-                ),
-              ),
-            ),
-            CyclesStatus.ready => ContentSliver(
-              bottom: 96,
-              sliver: SliverList.separated(
-                itemCount: cycles.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (context, i) => _CycleCard(cycle: cycles[i]),
-              ),
-            ),
-          },
-        ],
-      ),
-    );
-  }
-}
-
-class _CycleCard extends StatelessWidget {
-  const _CycleCard({required this.cycle});
-
-  final Cycle cycle;
+  void _openSettings() => Navigator.of(
+    context,
+  ).push(MaterialPageRoute<void>(builder: (_) => const SettingsPage()));
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final colors = context.plafin;
-    final money = context.money;
-    final balance = cycle.balanceCents;
-    final dateText = context.formatDate(cycle.date);
+    final state = context.watch<CyclesCubit>().state;
+    final sorted = state.sortedCycles;
+    final current = state.currentCycle(DateTime.now());
+    final ready = state.status == CyclesStatus.ready;
+    final List<TimelineEntry> entries = ready
+        ? buildTimeline(sorted, current)
+        : const [];
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () =>
-            Navigator.of(context).pushNamed(Routes.cycle, arguments: cycle.id),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          cycle.name ?? dateText,
-                          style: theme.textTheme.titleMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          cycle.name != null
-                              ? dateText
-                              : l10n.itemsCount(cycle.items.length),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    money.format(balance),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: balance < 0 ? colors.expense : colors.income,
-                    ),
-                  ),
-                ],
+    final darkIcons =
+        _heroUnderStatusBar || theme.brightness == Brightness.light;
+    final overlay = SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: darkIcons ? Brightness.dark : Brightness.light,
+      statusBarBrightness: darkIcons ? Brightness.light : Brightness.dark,
+    );
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlay,
+      child: Scaffold(
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _onScroll,
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: HomeHero(
+                  current: ready ? current : null,
+                  onSettings: _openSettings,
+                  onOpenCurrent: () => _openCycle(current!.id),
+                ),
               ),
-              if (cycle.items.isNotEmpty) ...[
-                const SizedBox(height: 14),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(value: cycle.progress),
+              switch (state.status) {
+                CyclesStatus.loading => const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.progressDone(cycle.doneCount, cycle.items.length),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                CyclesStatus.failure => SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyState(
+                    icon: Icons.error_outline_rounded,
+                    title: l10n.loadError,
+                    message: '',
+                    action: FilledButton(
+                      onPressed: () => context.read<CyclesCubit>().load(),
+                      child: Text(l10n.retry),
+                    ),
                   ),
                 ),
-              ],
+                CyclesStatus.ready => _Timeline(
+                  entries: entries,
+                  total: sorted.length,
+                  onCreate: _createCycle,
+                  onOpen: _openCycle,
+                ),
+              },
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _Timeline extends StatelessWidget {
+  const _Timeline({
+    required this.entries,
+    required this.total,
+    required this.onCreate,
+    required this.onOpen,
+  });
+
+  final List<TimelineEntry> entries;
+  final int total;
+  final VoidCallback onCreate;
+  final ValueChanged<String> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final bottom = 32 + MediaQuery.paddingOf(context).bottom;
+
+    return ContentSliver(
+      top: 28,
+      bottom: bottom,
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.timelineTitle,
+                    style: theme.textTheme.titleLarge,
+                  ),
+                ),
+                Text(
+                  l10n.cyclesCount(total),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          for (var i = 0; i < entries.length; i++)
+            Reveal(
+              index: i,
+              child: _row(context, entries[i], isLast: i == entries.length - 1),
+            ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _row(BuildContext context, TimelineEntry e, {required bool isLast}) {
+    return switch (e) {
+      NewCycleEntry() => TimelineRow(
+        kind: NodeKind.add,
+        isFirst: true,
+        isLast: isLast,
+        child: NewCycleCard(onTap: onCreate),
+      ),
+      YearEntry(:final year) => TimelineRow(
+        kind: NodeKind.year,
+        isLast: isLast,
+        bottomGap: 8,
+        child: YearLabel(year),
+      ),
+      CycleEntry(:final cycle, :final isCurrent) => TimelineRow(
+        kind: nodeKindFor(cycle, isCurrent: isCurrent),
+        isLast: isLast,
+        child: CycleCard(
+          cycle: cycle,
+          highlight: isCurrent,
+          onTap: () => onOpen(cycle.id),
+        ),
+      ),
+    };
   }
 }

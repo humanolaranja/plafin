@@ -16,8 +16,8 @@ void main() {
   ) async {
     await _pumpApp(tester);
 
-    expect(find.text('Nenhum ciclo ainda'), findsOneWidget);
-    await tester.tap(find.text('Criar ciclo'));
+    expect(find.text('Planeje o seu próximo ciclo'), findsOneWidget);
+    await tester.tap(find.text('Novo ciclo'));
     await tester.pumpAndSettle();
 
     // formulário de ciclo: nome + saldo inicial R$ 100,00
@@ -79,7 +79,10 @@ void main() {
     // voltar: o ciclo aparece na lista com progresso
     tester.state<NavigatorState>(find.byType(Navigator)).pop();
     await tester.pumpAndSettle();
-    expect(find.text('Novembro'), findsOneWidget);
-    expect(find.text('1 de 2 realizados'), findsOneWidget);
+    // hero (ciclo atual) + card na linha do tempo
+    expect(find.text('Novembro'), findsNWidgets(2));
+    expect(find.text('1 de 2 realizados'), findsNWidgets(2));
+    expect(find.text('Ciclo atual'), findsOneWidget);
+    expect(find.text('Linha do tempo'), findsOneWidget);
   });
 }

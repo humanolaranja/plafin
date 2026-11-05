@@ -83,7 +83,7 @@
   "exportSuccess": "Backup salvo.",
   "exportFailed": "Não foi possível salvar o backup.",
   "importPreviewTitle": "Importar backup",
-  "importPreviewBody": "O arquivo contém {cycles, plural, =1{1 ciclo} other{{cycles} ciclos}} e {items, plural, =1{1 item} other{{items} itens}}.",
+  "importPreviewBody": "O arquivo contém {cycles, plural, =0{0 ciclos} =1{1 ciclo} other{{cycles} ciclos}} e {items, plural, =0{0 itens} =1{1 item} other{{items} itens}}.",
   "@importPreviewBody": {
     "placeholders": {
       "cycles": {
@@ -109,5 +109,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "homeCurrentCycle": "Ciclo atual",
+  "homeWelcomeTitle": "Planeje o seu próximo ciclo",
+  "homeWelcomeBody": "Organize receitas e despesas a partir do dia em que você recebe.",
+  "timelineTitle": "Linha do tempo",
+  "cyclesCount": "{count, plural, =0{Nenhum ciclo} =1{1 ciclo} other{{count} ciclos}}",
+  "@cyclesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newCycleHint": "Comece a partir do dia do pagamento"
 }

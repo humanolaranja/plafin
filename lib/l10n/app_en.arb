@@ -75,5 +75,11 @@
   "importInvalidFile": "Invalid file. Choose a Plafin backup.",
   "importNewerVersion": "This backup was created by a newer version of Plafin.",
   "aboutSection": "About",
-  "versionLabel": "Version {version}"
+  "versionLabel": "Version {version}",
+  "homeCurrentCycle": "Current cycle",
+  "homeWelcomeTitle": "Plan your next cycle",
+  "homeWelcomeBody": "Organize income and expenses starting from the day you get paid.",
+  "timelineTitle": "Timeline",
+  "cyclesCount": "{count, plural, =0{No cycles} =1{1 cycle} other{{count} cycles}}",
+  "newCycleHint": "Start from payday"
 }

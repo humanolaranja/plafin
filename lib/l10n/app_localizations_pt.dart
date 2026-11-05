@@ -229,12 +229,14 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$cycles ciclos',
       one: '1 ciclo',
+      zero: '0 ciclos',
     );
     String _temp1 = intl.Intl.pluralLogic(
       items,
       locale: localeName,
       other: '$items itens',
       one: '1 item',
+      zero: '0 itens',
     );
     return 'O arquivo contém $_temp0 e $_temp1.';
   }
@@ -270,4 +272,32 @@ class AppLocalizationsPt extends AppLocalizations {
   String versionLabel(String version) {
     return 'Versão $version';
   }
+
+  @override
+  String get homeCurrentCycle => 'Ciclo atual';
+
+  @override
+  String get homeWelcomeTitle => 'Planeje o seu próximo ciclo';
+
+  @override
+  String get homeWelcomeBody =>
+      'Organize receitas e despesas a partir do dia em que você recebe.';
+
+  @override
+  String get timelineTitle => 'Linha do tempo';
+
+  @override
+  String cyclesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ciclos',
+      one: '1 ciclo',
+      zero: 'Nenhum ciclo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newCycleHint => 'Comece a partir do dia do pagamento';
 }

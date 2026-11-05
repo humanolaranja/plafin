@@ -268,4 +268,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String versionLabel(String version) {
     return 'Version $version';
   }
+
+  @override
+  String get homeCurrentCycle => 'Current cycle';
+
+  @override
+  String get homeWelcomeTitle => 'Plan your next cycle';
+
+  @override
+  String get homeWelcomeBody =>
+      'Organize income and expenses starting from the day you get paid.';
+
+  @override
+  String get timelineTitle => 'Timeline';
+
+  @override
+  String cyclesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cycles',
+      one: '1 cycle',
+      zero: 'No cycles',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newCycleHint => 'Start from payday';
 }
