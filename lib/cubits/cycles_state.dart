@@ -62,17 +62,23 @@ class CyclesState extends Equatable {
     return [for (final e in indexed) e.$2];
   }
 
-  /// Ciclo em andamento: o mais recente com data até [today]; se todos forem
-  /// futuros, o mais próximo.
+  /// Ciclo "atual": o mais próximo de [today] que **não está no passado**
+  /// (hoje conta). Se todos estiverem no passado, devolve o mais recente (use
+  /// [isPast] para rotulá-lo como "último").
   Cycle? currentCycle(DateTime today) {
-    final sorted = sortedCycles;
-    if (sorted.isEmpty) return null;
+    if (cycles.isEmpty) return null;
     final day = DateTime(today.year, today.month, today.day);
-    for (final c in sorted) {
-      if (!c.date.isAfter(day)) return c;
+    Cycle? best;
+    for (final c in cycles) {
+      if (c.date.isBefore(day)) continue;
+      if (best == null || c.date.isBefore(best.date)) best = c;
     }
-    return sorted.last;
+    return best ?? sortedCycles.first;
   }
+
+  /// `true` se o ciclo começou antes de [today].
+  static bool isPast(Cycle c, DateTime today) =>
+      c.date.isBefore(DateTime(today.year, today.month, today.day));
 
   Cycle? cycleById(String id) {
     for (final c in cycles) {

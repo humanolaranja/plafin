@@ -11,12 +11,16 @@ class HomeHero extends StatelessWidget {
   const HomeHero({
     super.key,
     required this.current,
+    this.currentIsPast = false,
     required this.onSettings,
     required this.onOpenCurrent,
   });
 
   /// `null` quando ainda não há ciclos (mostra as boas-vindas).
   final Cycle? current;
+
+  /// O ciclo mostrado já começou (todos estão no passado): rótulo "Último ciclo".
+  final bool currentIsPast;
   final VoidCallback onSettings;
   final VoidCallback onOpenCurrent;
 
@@ -79,7 +83,11 @@ class HomeHero extends StatelessWidget {
                             textTheme: textTheme,
                           )
                         else
-                          _CurrentCycle(cycle: current!, onTap: onOpenCurrent),
+                          _CurrentCycle(
+                            cycle: current!,
+                            isPast: currentIsPast,
+                            onTap: onOpenCurrent,
+                          ),
                       ],
                     ),
                   ),
@@ -170,9 +178,14 @@ class _Welcome extends StatelessWidget {
 }
 
 class _CurrentCycle extends StatelessWidget {
-  const _CurrentCycle({required this.cycle, required this.onTap});
+  const _CurrentCycle({
+    required this.cycle,
+    required this.isPast,
+    required this.onTap,
+  });
 
   final Cycle cycle;
+  final bool isPast;
   final VoidCallback onTap;
 
   @override
@@ -251,7 +264,7 @@ class _CurrentCycle extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        l10n.homeCurrentCycle,
+                        isPast ? l10n.homeLastCycle : l10n.homeCurrentCycle,
                         style: textTheme.labelMedium?.copyWith(
                           color: AppTheme.heroStart,
                         ),

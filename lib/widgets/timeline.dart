@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' show PathMetric;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../core/format/format_context.dart';
 import '../core/theme/app_theme.dart';
@@ -14,7 +15,7 @@ const double kRailWidth = 40;
 /// Altura, a partir do topo da linha, onde fica o marcador de cada item.
 const double _nodeY = 30;
 
-enum NodeKind { add, year, current, done, open }
+enum NodeKind { add, group, current, done, open }
 
 /// Uma linha da linha do tempo: trilha à esquerda + conteúdo à direita.
 class TimelineRow extends StatelessWidget {
@@ -48,11 +49,11 @@ class TimelineRow extends StatelessWidget {
               color: scheme.outlineVariant,
               fromY: isFirst ? _nodeY : 0,
               toY: isLast ? _nodeY : null,
-              hideLine: kind == NodeKind.year && isLast,
+              hideLine: kind == NodeKind.group && isLast,
             ),
           ),
         ),
-        if (kind != NodeKind.year)
+        if (kind != NodeKind.group)
           Positioned(
             left: 0,
             top: _nodeY - 14,
@@ -158,38 +159,54 @@ class _Node extends StatelessWidget {
             border: Border.all(color: scheme.outline, width: 2.5),
           ),
         );
-      case NodeKind.year:
+      case NodeKind.group:
         return const SizedBox.shrink();
     }
   }
 }
 
-/// Etiqueta do ano, centralizada na trilha.
-class YearLabel extends StatelessWidget {
-  const YearLabel(this.year, {super.key});
+/// Etiquetas do grupo: o ano (só quando muda) e o mês por extenso.
+class GroupLabel extends StatelessWidget {
+  const GroupLabel({super.key, required this.date, required this.showYear});
 
-  final int year;
+  final DateTime date;
+  final bool showYear;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final locale = Localizations.localeOf(context).toString();
+    final month = toBeginningOfSentenceCase(
+      DateFormat.MMMM(locale).format(date),
+    );
+
+    Widget pill(String text, {required bool strong}) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: strong ? scheme.primaryContainer : scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(20),
+        border: strong ? null : Border.all(color: scheme.outlineVariant),
+      ),
+      child: Text(
+        text,
+        style: theme.textTheme.labelLarge?.copyWith(
+          color: strong ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+        ),
+      ),
+    );
+
     return Padding(
-      padding: const EdgeInsets.only(left: 0, top: 4, bottom: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHigh,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: theme.colorScheme.outlineVariant),
-          ),
-          child: Text(
-            '$year',
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: [
+            if (showYear) pill('${date.year}', strong: false),
+            pill(month, strong: true),
+          ],
         ),
       ),
     );
@@ -445,9 +462,11 @@ class NewCycleEntry extends TimelineEntry {
   const NewCycleEntry();
 }
 
-class YearEntry extends TimelineEntry {
-  const YearEntry(this.year);
-  final int year;
+/// Cabeçalho de um grupo (mês); mostra também o ano quando ele muda.
+class GroupEntry extends TimelineEntry {
+  const GroupEntry(this.date, {required this.showYear});
+  final DateTime date;
+  final bool showYear;
 }
 
 class CycleEntry extends TimelineEntry {
@@ -456,14 +475,18 @@ class CycleEntry extends TimelineEntry {
   final bool isCurrent;
 }
 
-/// Monta a lista: "+ Novo ciclo", depois os ciclos agrupados por ano.
+/// Monta a lista: "+ Novo ciclo", depois os ciclos agrupados por mês (com o
+/// ano indicado quando muda).
 List<TimelineEntry> buildTimeline(List<Cycle> sorted, Cycle? current) {
   final entries = <TimelineEntry>[const NewCycleEntry()];
   int? year;
+  int? month;
   for (final c in sorted) {
-    if (c.date.year != year) {
+    final newYear = c.date.year != year;
+    if (newYear || c.date.month != month) {
+      entries.add(GroupEntry(c.date, showYear: newYear));
       year = c.date.year;
-      entries.add(YearEntry(year));
+      month = c.date.month;
     }
     entries.add(CycleEntry(c, isCurrent: c.id == current?.id));
   }

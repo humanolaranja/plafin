@@ -23,7 +23,7 @@ void main() {
     // formulário de ciclo: nome + saldo inicial R$ 100,00
     await tester.enterText(
       find.widgetWithText(TextField, 'Nome (opcional)'),
-      'Novembro',
+      'Ciclo teste',
     );
     await tester.enterText(
       find.widgetWithText(TextField, 'Saldo inicial'),
@@ -33,7 +33,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // abriu a página do ciclo com o item de saldo inicial
-    expect(find.text('Novembro'), findsOneWidget);
+    expect(find.text('Ciclo teste'), findsOneWidget);
     expect(find.textContaining('+R\$'), findsOneWidget);
     expect(find.text('0 de 1 realizados'), findsOneWidget);
 
@@ -80,9 +80,26 @@ void main() {
     tester.state<NavigatorState>(find.byType(Navigator)).pop();
     await tester.pumpAndSettle();
     // hero (ciclo atual) + card na linha do tempo
-    expect(find.text('Novembro'), findsNWidgets(2));
+    expect(find.text('Ciclo teste'), findsNWidgets(2));
     expect(find.text('1 de 2 realizados'), findsNWidgets(2));
     expect(find.text('Ciclo atual'), findsOneWidget);
+    // etiqueta do mês por extenso (capitalizada) do ciclo criado hoje
+    const months = [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro',
+    ];
+    expect(find.text(months[DateTime.now().month - 1]), findsOneWidget);
+    expect(find.text('${DateTime.now().year}'), findsOneWidget);
     expect(find.text('Linha do tempo'), findsOneWidget);
   });
 }

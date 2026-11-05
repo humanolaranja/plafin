@@ -122,5 +122,6 @@
       }
     }
   },
-  "newCycleHint": "Comece a partir do dia do pagamento"
+  "newCycleHint": "Comece a partir do dia do pagamento",
+  "homeLastCycle": "Último ciclo"
 }

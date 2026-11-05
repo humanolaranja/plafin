@@ -589,6 +589,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Comece a partir do dia do pagamento'**
   String get newCycleHint;
+
+  /// No description provided for @homeLastCycle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Último ciclo'**
+  String get homeLastCycle;
 }
 
 class _AppLocalizationsDelegate

@@ -296,4 +296,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newCycleHint => 'Start from payday';
+
+  @override
+  String get homeLastCycle => 'Last cycle';
 }

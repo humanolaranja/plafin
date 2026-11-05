@@ -56,7 +56,8 @@ class _CyclesPageState extends State<CyclesPage> {
     final theme = Theme.of(context);
     final state = context.watch<CyclesCubit>().state;
     final sorted = state.sortedCycles;
-    final current = state.currentCycle(DateTime.now());
+    final today = DateTime.now();
+    final current = state.currentCycle(today);
     final ready = state.status == CyclesStatus.ready;
     final List<TimelineEntry> entries = ready
         ? buildTimeline(sorted, current)
@@ -81,6 +82,10 @@ class _CyclesPageState extends State<CyclesPage> {
                 child: HomeHero(
                   key: _heroKey,
                   current: ready ? current : null,
+                  currentIsPast:
+                      ready &&
+                      current != null &&
+                      CyclesState.isPast(current, today),
                   onSettings: _openSettings,
                   onOpenCurrent: () => _openCycle(current!.id),
                 ),
@@ -178,11 +183,11 @@ class _Timeline extends StatelessWidget {
         isLast: isLast,
         child: NewCycleCard(onTap: onCreate),
       ),
-      YearEntry(:final year) => TimelineRow(
-        kind: NodeKind.year,
+      GroupEntry(:final date, :final showYear) => TimelineRow(
+        kind: NodeKind.group,
         isLast: isLast,
         bottomGap: 8,
-        child: YearLabel(year),
+        child: GroupLabel(date: date, showYear: showYear),
       ),
       CycleEntry(:final cycle, :final isCurrent) => TimelineRow(
         kind: nodeKindFor(cycle, isCurrent: isCurrent),

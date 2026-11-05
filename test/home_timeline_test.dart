@@ -8,55 +8,79 @@ void main() {
   Cycle c(String id, DateTime d, {List<Item> items = const []}) =>
       Cycle(id: id, date: d, items: items);
 
-  group('currentCycle', () {
-    final today = DateTime(2026, 11, 5);
+  group('currentCycle (nearest cycle that is not in the past)', () {
+    final nov5 = c('nov5', DateTime(2026, 11, 5));
+    final nov20 = c('nov20', DateTime(2026, 11, 20));
+    CyclesState state(List<Cycle> cycles) =>
+        CyclesState(status: CyclesStatus.ready, cycles: cycles);
 
-    test('is the latest cycle that already started', () {
-      final s = CyclesState(
-        status: CyclesStatus.ready,
-        cycles: [
-          c('a', DateTime(2026, 9, 5)),
-          c('b', DateTime(2026, 11, 5)),
-          c('f', DateTime(2026, 12, 5)),
-        ],
-      );
-      expect(s.currentCycle(today)!.id, 'b');
+    test('day after the 5th -> the 20th', () {
+      final s = state([nov5, nov20]);
+      expect(s.currentCycle(DateTime(2026, 11, 6))!.id, 'nov20');
     });
 
-    test('falls back to the nearest future cycle', () {
-      final s = CyclesState(
-        status: CyclesStatus.ready,
-        cycles: [c('x', DateTime(2027, 2, 1)), c('y', DateTime(2027, 1, 1))],
-      );
-      expect(s.currentCycle(today)!.id, 'y');
+    test('today counts as not past', () {
+      final s = state([nov5, nov20]);
+      expect(s.currentCycle(DateTime(2026, 11, 5, 18, 30))!.id, 'nov5');
+      expect(s.currentCycle(DateTime(2026, 11, 20))!.id, 'nov20');
+    });
+
+    test('picks the nearest future one regardless of list order', () {
+      final s = state([
+        c('dec', DateTime(2026, 12, 5)),
+        nov20,
+        c('jan', DateTime(2027, 1, 5)),
+        nov5,
+      ]);
+      expect(s.currentCycle(DateTime(2026, 11, 6))!.id, 'nov20');
+      expect(s.currentCycle(DateTime(2026, 11, 21))!.id, 'dec');
+    });
+
+    test('all in the past -> most recent one, flagged as past', () {
+      final s = state([nov5, nov20]);
+      final today = DateTime(2026, 11, 21);
+      final cur = s.currentCycle(today)!;
+      expect(cur.id, 'nov20');
+      expect(CyclesState.isPast(cur, today), isTrue);
+      expect(CyclesState.isPast(nov20, DateTime(2026, 11, 20)), isFalse);
     });
 
     test('null when empty', () {
-      expect(const CyclesState().currentCycle(today), isNull);
+      expect(const CyclesState().currentCycle(DateTime(2026, 11, 6)), isNull);
     });
   });
 
   group('buildTimeline', () {
-    test('starts with the new-cycle card and groups by year', () {
-      final sorted = [
-        c('a', DateTime(2026, 11, 20)),
-        c('b', DateTime(2026, 11, 5)),
-        c('d', DateTime(2025, 12, 5)),
-      ];
-      final entries = buildTimeline(sorted, sorted[1]);
-      expect(entries.map((e) => e.runtimeType.toString()), [
-        'NewCycleEntry',
-        'YearEntry',
-        'CycleEntry',
-        'CycleEntry',
-        'YearEntry',
-        'CycleEntry',
-      ]);
-      expect((entries[1] as YearEntry).year, 2026);
-      expect((entries[4] as YearEntry).year, 2025);
-      expect((entries[3] as CycleEntry).isCurrent, isTrue);
-      expect((entries[2] as CycleEntry).isCurrent, isFalse);
-    });
+    test(
+      'new-cycle card first, then month groups; year only when it changes',
+      () {
+        final sorted = [
+          c('a', DateTime(2026, 11, 20)),
+          c('b', DateTime(2026, 11, 5)),
+          c('x', DateTime(2026, 10, 5)),
+          c('d', DateTime(2025, 12, 5)),
+        ];
+        final entries = buildTimeline(sorted, sorted[1]);
+        expect(entries.map((e) => e.runtimeType.toString()), [
+          'NewCycleEntry',
+          'GroupEntry', // novembro de 2026 (mostra o ano)
+          'CycleEntry',
+          'CycleEntry',
+          'GroupEntry', // outubro (mesmo ano, sem ano)
+          'CycleEntry',
+          'GroupEntry', // dezembro de 2025 (ano mudou)
+          'CycleEntry',
+        ]);
+        final groups = entries.whereType<GroupEntry>().toList();
+        expect(groups.map((g) => (g.date.year, g.date.month, g.showYear)), [
+          (2026, 11, true),
+          (2026, 10, false),
+          (2025, 12, true),
+        ]);
+        expect((entries[3] as CycleEntry).isCurrent, isTrue);
+        expect((entries[2] as CycleEntry).isCurrent, isFalse);
+      },
+    );
 
     test('only the new-cycle card when there are no cycles', () {
       expect(buildTimeline(const [], null), hasLength(1));

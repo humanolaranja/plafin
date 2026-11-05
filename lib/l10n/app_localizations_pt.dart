@@ -300,4 +300,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get newCycleHint => 'Comece a partir do dia do pagamento';
+
+  @override
+  String get homeLastCycle => 'Último ciclo';
 }
