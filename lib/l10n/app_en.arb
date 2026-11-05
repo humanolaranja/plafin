@@ -84,10 +84,11 @@
   "newCycleHint": "Start from payday",
   "homeLastCycle": "Last cycle",
   "sortItems": "Sort items",
-  "sortIncomeFirst": "Income first",
-  "sortPendingFirst": "Pending first",
-  "sortAmountDesc": "Highest amount first",
-  "sortNameAsc": "Name (A–Z)",
+  "sortIncomeFirst": "Income on top",
+  "sortPendingFirst": "Pending before done",
+  "sortAmountDesc": "Highest to lowest amount",
   "itemsSorted": "Items sorted",
-  "dragToReorder": "Drag to reorder"
+  "dragToReorder": "Drag to reorder",
+  "sortExpensesFirst": "Expenses on top",
+  "sortAmountAsc": "Lowest to highest amount"
 }

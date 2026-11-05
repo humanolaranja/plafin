@@ -109,9 +109,9 @@ class CyclePage extends StatelessWidget {
                         Icons.arrow_downward_rounded,
                       ),
                       (
-                        ItemSort.pendingFirst,
-                        l10n.sortPendingFirst,
-                        Icons.radio_button_unchecked_rounded,
+                        ItemSort.expensesFirst,
+                        l10n.sortExpensesFirst,
+                        Icons.arrow_upward_rounded,
                       ),
                       (
                         ItemSort.amountDesc,
@@ -119,9 +119,14 @@ class CyclePage extends StatelessWidget {
                         Icons.trending_down_rounded,
                       ),
                       (
-                        ItemSort.nameAsc,
-                        l10n.sortNameAsc,
-                        Icons.sort_by_alpha_rounded,
+                        ItemSort.amountAsc,
+                        l10n.sortAmountAsc,
+                        Icons.trending_up_rounded,
+                      ),
+                      (
+                        ItemSort.pendingFirst,
+                        l10n.sortPendingFirst,
+                        Icons.radio_button_unchecked_rounded,
                       ),
                     ])
                       PopupMenuItem(

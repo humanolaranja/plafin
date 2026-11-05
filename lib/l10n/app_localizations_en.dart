@@ -304,20 +304,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sortItems => 'Sort items';
 
   @override
-  String get sortIncomeFirst => 'Income first';
+  String get sortIncomeFirst => 'Income on top';
 
   @override
-  String get sortPendingFirst => 'Pending first';
+  String get sortPendingFirst => 'Pending before done';
 
   @override
-  String get sortAmountDesc => 'Highest amount first';
-
-  @override
-  String get sortNameAsc => 'Name (A–Z)';
+  String get sortAmountDesc => 'Highest to lowest amount';
 
   @override
   String get itemsSorted => 'Items sorted';
 
   @override
   String get dragToReorder => 'Drag to reorder';
+
+  @override
+  String get sortExpensesFirst => 'Expenses on top';
+
+  @override
+  String get sortAmountAsc => 'Lowest to highest amount';
 }

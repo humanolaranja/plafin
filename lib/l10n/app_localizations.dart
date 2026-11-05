@@ -605,26 +605,20 @@ abstract class AppLocalizations {
   /// No description provided for @sortIncomeFirst.
   ///
   /// In pt, this message translates to:
-  /// **'Receitas primeiro'**
+  /// **'Receitas no topo'**
   String get sortIncomeFirst;
 
   /// No description provided for @sortPendingFirst.
   ///
   /// In pt, this message translates to:
-  /// **'Pendentes primeiro'**
+  /// **'Pendentes antes dos realizados'**
   String get sortPendingFirst;
 
   /// No description provided for @sortAmountDesc.
   ///
   /// In pt, this message translates to:
-  /// **'Maior valor primeiro'**
+  /// **'Maior para menor valor'**
   String get sortAmountDesc;
-
-  /// No description provided for @sortNameAsc.
-  ///
-  /// In pt, this message translates to:
-  /// **'Nome (A–Z)'**
-  String get sortNameAsc;
 
   /// No description provided for @itemsSorted.
   ///
@@ -637,6 +631,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Arrastar para reordenar'**
   String get dragToReorder;
+
+  /// No description provided for @sortExpensesFirst.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas no topo'**
+  String get sortExpensesFirst;
+
+  /// No description provided for @sortAmountAsc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Menor para maior valor'**
+  String get sortAmountAsc;
 }
 
 class _AppLocalizationsDelegate

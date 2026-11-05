@@ -125,10 +125,11 @@
   "newCycleHint": "Comece a partir do dia do pagamento",
   "homeLastCycle": "Último ciclo",
   "sortItems": "Ordenar itens",
-  "sortIncomeFirst": "Receitas primeiro",
-  "sortPendingFirst": "Pendentes primeiro",
-  "sortAmountDesc": "Maior valor primeiro",
-  "sortNameAsc": "Nome (A–Z)",
+  "sortIncomeFirst": "Receitas no topo",
+  "sortPendingFirst": "Pendentes antes dos realizados",
+  "sortAmountDesc": "Maior para menor valor",
   "itemsSorted": "Itens ordenados",
-  "dragToReorder": "Arrastar para reordenar"
+  "dragToReorder": "Arrastar para reordenar",
+  "sortExpensesFirst": "Despesas no topo",
+  "sortAmountAsc": "Menor para maior valor"
 }
