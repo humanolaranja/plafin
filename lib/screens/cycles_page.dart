@@ -23,9 +23,13 @@ class _CyclesPageState extends State<CyclesPage> {
   /// escuros; depois que ele sai da tela, seguem o tema.
   bool _heroUnderStatusBar = true;
 
+  final _heroKey = GlobalKey();
+
   bool _onScroll(ScrollNotification n) {
     if (n.depth != 0) return false;
-    final under = n.metrics.pixels < 40;
+    final heroHeight = _heroKey.currentContext?.size?.height ?? 300;
+    final statusBar = MediaQuery.paddingOf(context).top;
+    final under = n.metrics.pixels < heroHeight - statusBar;
     if (under != _heroUnderStatusBar) {
       setState(() => _heroUnderStatusBar = under);
     }
@@ -75,6 +79,7 @@ class _CyclesPageState extends State<CyclesPage> {
             slivers: [
               SliverToBoxAdapter(
                 child: HomeHero(
+                  key: _heroKey,
                   current: ready ? current : null,
                   onSettings: _openSettings,
                   onOpenCurrent: () => _openCycle(current!.id),
