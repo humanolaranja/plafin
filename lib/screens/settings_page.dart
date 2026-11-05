@@ -248,7 +248,7 @@ class _AboutTile extends StatelessWidget {
       builder: (context, snapshot) {
         final version = snapshot.data?.version ?? '';
         return ListTile(
-          leading: const Icon(Icons.info_outline_rounded),
+          leading: const PlafinLogo(size: 40),
           title: Text('${l10n.appName} · ${l10n.appTagline}'),
           subtitle: version.isEmpty ? null : Text(l10n.versionLabel(version)),
         );

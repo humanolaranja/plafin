@@ -71,7 +71,7 @@ class CyclesPage extends StatelessWidget {
             CyclesStatus.ready when cycles.isEmpty => SliverFillRemaining(
               hasScrollBody: false,
               child: EmptyState(
-                icon: Icons.event_repeat_rounded,
+                leading: const PlafinLogo(size: 96),
                 title: l10n.cyclesEmptyTitle,
                 message: l10n.cyclesEmptyBody,
                 action: FilledButton.icon(

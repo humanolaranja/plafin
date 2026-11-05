@@ -31,16 +31,38 @@ class ContentSliver extends StatelessWidget {
   }
 }
 
+/// Logo do Plafin (ícone arredondado).
+class PlafinLogo extends StatelessWidget {
+  const PlafinLogo({super.key, this.size = 40});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      'assets/branding/logo_rounded.png',
+      width: size,
+      height: size,
+      filterQuality: FilterQuality.medium,
+      excludeFromSemantics: true,
+    );
+  }
+}
+
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
-    required this.icon,
+    this.icon,
+    this.leading,
     required this.title,
     required this.message,
     this.action,
   });
 
-  final IconData icon;
+  final IconData? icon;
+
+  /// Substitui o ícone circular (ex.: o logo do app).
+  final Widget? leading;
   final String title;
   final String message;
   final Widget? action;
@@ -56,19 +78,20 @@ class EmptyState extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  size: 40,
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
-              ),
+              leading ??
+                  Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      icon,
+                      size: 40,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
               const SizedBox(height: 24),
               Text(
                 title,
