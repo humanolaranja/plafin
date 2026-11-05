@@ -177,7 +177,6 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: text.titleLarge,
       ),
       cardTheme: CardThemeData(
         elevation: 0,

@@ -1,4 +1,4 @@
-package com.example.plafin
+package com.plafin.app
 
 import io.flutter.embedding.android.FlutterActivity
 

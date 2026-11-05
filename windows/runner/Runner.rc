@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "plafin" "\0"
+            VALUE "CompanyName", "Plafin" "\0"
+            VALUE "FileDescription", "Plafin" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "plafin" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Plafin. All rights reserved." "\0"
             VALUE "OriginalFilename", "plafin.exe" "\0"
-            VALUE "ProductName", "plafin" "\0"
+            VALUE "ProductName", "Plafin" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
