@@ -299,4 +299,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeLastCycle => 'Last cycle';
+
+  @override
+  String get sortItems => 'Sort items';
+
+  @override
+  String get sortIncomeFirst => 'Income first';
+
+  @override
+  String get sortPendingFirst => 'Pending first';
+
+  @override
+  String get sortAmountDesc => 'Highest amount first';
+
+  @override
+  String get sortNameAsc => 'Name (A–Z)';
+
+  @override
+  String get itemsSorted => 'Items sorted';
+
+  @override
+  String get dragToReorder => 'Drag to reorder';
 }

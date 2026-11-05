@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../app.dart';
 import '../cubits/cycles_cubit.dart';
 import '../core/format/format_context.dart';
+import '../core/format/money.dart';
 import '../core/theme/app_theme.dart';
 import '../data/cycle.dart';
 import '../data/item.dart';
+import '../data/item_sort.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/common.dart';
 import '../widgets/cycle_form_sheet.dart';
@@ -93,6 +95,44 @@ class CyclePage extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             actions: [
+              if (cycle.items.length > 1)
+                PopupMenuButton<ItemSort>(
+                  tooltip: l10n.sortItems,
+                  icon: const Icon(Icons.sort_rounded),
+                  onSelected: (sort) =>
+                      context.read<CyclesCubit>().sortItems(cycle.id, sort),
+                  itemBuilder: (context) => [
+                    for (final (sort, label, icon) in [
+                      (
+                        ItemSort.incomeFirst,
+                        l10n.sortIncomeFirst,
+                        Icons.arrow_downward_rounded,
+                      ),
+                      (
+                        ItemSort.pendingFirst,
+                        l10n.sortPendingFirst,
+                        Icons.radio_button_unchecked_rounded,
+                      ),
+                      (
+                        ItemSort.amountDesc,
+                        l10n.sortAmountDesc,
+                        Icons.trending_down_rounded,
+                      ),
+                      (
+                        ItemSort.nameAsc,
+                        l10n.sortNameAsc,
+                        Icons.sort_by_alpha_rounded,
+                      ),
+                    ])
+                      PopupMenuItem(
+                        value: sort,
+                        child: ListTile(
+                          leading: Icon(icon),
+                          title: Text(label),
+                        ),
+                      ),
+                  ],
+                ),
               PopupMenuButton<_CycleAction>(
                 onSelected: (a) => _onAction(context, cycle, a),
                 itemBuilder: (context) => [
@@ -142,11 +182,41 @@ class CyclePage extends StatelessWidget {
             ContentSliver(
               top: 16,
               bottom: 96,
-              sliver: SliverList.separated(
+              sliver: SliverReorderableList(
                 itemCount: cycle.items.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 8),
-                itemBuilder: (context, i) =>
-                    _ItemTile(cycleId: cycle.id, item: cycle.items[i]),
+                onReorder: (o, n) =>
+                    context.read<CyclesCubit>().reorderItems(cycle.id, o, n),
+                proxyDecorator: (child, index, animation) => AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, child) => Material(
+                    type: MaterialType.transparency,
+                    elevation: 0,
+                    child: Transform.scale(
+                      scale:
+                          1 + 0.02 * Curves.easeOut.transform(animation.value),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.28),
+                              blurRadius: 18,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: child,
+                      ),
+                    ),
+                  ),
+                  child: child,
+                ),
+                itemBuilder: (context, i) => _ItemTile(
+                  key: ValueKey(cycle.items[i].id),
+                  index: i,
+                  cycleId: cycle.id,
+                  item: cycle.items[i],
+                ),
               ),
             ),
         ],
@@ -285,8 +355,14 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _ItemTile extends StatelessWidget {
-  const _ItemTile({required this.cycleId, required this.item});
+  const _ItemTile({
+    super.key,
+    required this.index,
+    required this.cycleId,
+    required this.item,
+  });
 
+  final int index;
   final String cycleId;
   final Item item;
 
@@ -298,8 +374,21 @@ class _ItemTile extends StatelessWidget {
     final money = context.money;
     final color = item.isIncome ? colors.income : colors.expense;
 
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: _dismissible(context, l10n, theme, money, color),
+    );
+  }
+
+  Widget _dismissible(
+    BuildContext context,
+    AppLocalizations l10n,
+    ThemeData theme,
+    MoneyFormatter money,
+    Color color,
+  ) {
     return Dismissible(
-      key: ValueKey(item.id),
+      key: ValueKey('dismiss-${item.id}'),
       direction: DismissDirection.endToStart,
       onDismissed: (_) =>
           context.read<CyclesCubit>().deleteItem(cycleId, item.id),
@@ -347,11 +436,25 @@ class _ItemTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Text(
-                    money.formatSigned(item.signedCents),
-                    style: theme.textTheme.titleSmall?.copyWith(color: color),
+                Text(
+                  money.formatSigned(item.signedCents),
+                  style: theme.textTheme.titleSmall?.copyWith(color: color),
+                ),
+                ReorderableDragStartListener(
+                  index: index,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.grab,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 10,
+                      ),
+                      child: Icon(
+                        Icons.drag_indicator_rounded,
+                        semanticLabel: l10n.dragToReorder,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
                 ),
               ],

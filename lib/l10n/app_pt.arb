@@ -123,5 +123,12 @@
     }
   },
   "newCycleHint": "Comece a partir do dia do pagamento",
-  "homeLastCycle": "Último ciclo"
+  "homeLastCycle": "Último ciclo",
+  "sortItems": "Ordenar itens",
+  "sortIncomeFirst": "Receitas primeiro",
+  "sortPendingFirst": "Pendentes primeiro",
+  "sortAmountDesc": "Maior valor primeiro",
+  "sortNameAsc": "Nome (A–Z)",
+  "itemsSorted": "Itens ordenados",
+  "dragToReorder": "Arrastar para reordenar"
 }

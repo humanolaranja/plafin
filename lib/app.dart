@@ -96,6 +96,7 @@ class _RemovalSnackBars extends StatelessWidget {
         final message = switch (state.removal!) {
           CycleRemoval() => l10n.cycleDeleted,
           ItemRemoval() => l10n.itemDeleted,
+          ItemsOrderChange() => l10n.itemsSorted,
         };
         scaffoldMessengerKey.currentState
           ?..hideCurrentSnackBar()

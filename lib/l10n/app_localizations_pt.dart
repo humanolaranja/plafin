@@ -303,4 +303,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get homeLastCycle => 'Último ciclo';
+
+  @override
+  String get sortItems => 'Ordenar itens';
+
+  @override
+  String get sortIncomeFirst => 'Receitas primeiro';
+
+  @override
+  String get sortPendingFirst => 'Pendentes primeiro';
+
+  @override
+  String get sortAmountDesc => 'Maior valor primeiro';
+
+  @override
+  String get sortNameAsc => 'Nome (A–Z)';
+
+  @override
+  String get itemsSorted => 'Itens ordenados';
+
+  @override
+  String get dragToReorder => 'Arrastar para reordenar';
 }

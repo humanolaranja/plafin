@@ -38,6 +38,25 @@ class ItemRemoval extends Removal {
   List<Object?> get props => [token, cycleId, item, index];
 }
 
+/// Ordenação automática dos itens de um ciclo, que pode ser desfeita.
+/// (Apesar do nome histórico `Removal`, representa qualquer alteração
+/// desfazível pelo SnackBar.)
+class ItemsOrderChange extends Removal {
+  const ItemsOrderChange(
+    super.token, {
+    required this.cycleId,
+    required this.previousIds,
+  });
+
+  final String cycleId;
+
+  /// Ids dos itens na ordem anterior.
+  final List<String> previousIds;
+
+  @override
+  List<Object?> get props => [token, cycleId, previousIds];
+}
+
 class CyclesState extends Equatable {
   const CyclesState({
     this.status = CyclesStatus.loading,

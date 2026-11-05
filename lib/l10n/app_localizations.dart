@@ -595,6 +595,48 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Último ciclo'**
   String get homeLastCycle;
+
+  /// No description provided for @sortItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ordenar itens'**
+  String get sortItems;
+
+  /// No description provided for @sortIncomeFirst.
+  ///
+  /// In pt, this message translates to:
+  /// **'Receitas primeiro'**
+  String get sortIncomeFirst;
+
+  /// No description provided for @sortPendingFirst.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pendentes primeiro'**
+  String get sortPendingFirst;
+
+  /// No description provided for @sortAmountDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Maior valor primeiro'**
+  String get sortAmountDesc;
+
+  /// No description provided for @sortNameAsc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome (A–Z)'**
+  String get sortNameAsc;
+
+  /// No description provided for @itemsSorted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens ordenados'**
+  String get itemsSorted;
+
+  /// No description provided for @dragToReorder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Arrastar para reordenar'**
+  String get dragToReorder;
 }
 
 class _AppLocalizationsDelegate

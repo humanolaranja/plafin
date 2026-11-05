@@ -82,5 +82,12 @@
   "timelineTitle": "Timeline",
   "cyclesCount": "{count, plural, =0{No cycles} =1{1 cycle} other{{count} cycles}}",
   "newCycleHint": "Start from payday",
-  "homeLastCycle": "Last cycle"
+  "homeLastCycle": "Last cycle",
+  "sortItems": "Sort items",
+  "sortIncomeFirst": "Income first",
+  "sortPendingFirst": "Pending first",
+  "sortAmountDesc": "Highest amount first",
+  "sortNameAsc": "Name (A–Z)",
+  "itemsSorted": "Items sorted",
+  "dragToReorder": "Drag to reorder"
 }

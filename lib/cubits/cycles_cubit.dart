@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import '../data/cycle.dart';
 import '../data/cycles_repository.dart';
 import '../data/item.dart';
+import '../data/item_sort.dart';
 
 part 'cycles_state.dart';
 
@@ -153,6 +154,50 @@ class CyclesCubit extends Cubit<CyclesState> {
     );
   }
 
+  // --- ordem dos itens -----------------------------------------------------
+
+  /// Move um item (callback de `ReorderableList`: [newIndex] é a posição
+  /// "antes da remoção", como no Flutter).
+  Future<void> reorderItems(String cycleId, int oldIndex, int newIndex) {
+    final cycle = state.cycleById(cycleId);
+    if (cycle == null || oldIndex < 0 || oldIndex >= cycle.items.length) {
+      return Future.value();
+    }
+    if (newIndex > oldIndex) newIndex -= 1;
+    newIndex = newIndex.clamp(0, cycle.items.length - 1);
+    if (newIndex == oldIndex) return Future.value();
+    final items = [...cycle.items];
+    items.insert(newIndex, items.removeAt(oldIndex));
+    return _commit(_mapCycle(cycleId, (c) => c.copyWith(items: items)));
+  }
+
+  /// Ordena automaticamente (com opção de desfazer).
+  Future<void> sortItems(String cycleId, ItemSort sort) {
+    final cycle = state.cycleById(cycleId);
+    if (cycle == null || cycle.items.length < 2) return Future.value();
+    final sorted = sort.apply(cycle.items);
+    final before = [for (final i in cycle.items) i.id];
+    if ([for (final i in sorted) i.id].join('|') == before.join('|')) {
+      return Future.value(); // já está nessa ordem
+    }
+    return _commit(
+      _mapCycle(cycleId, (c) => c.copyWith(items: sorted)),
+      removal: ItemsOrderChange(
+        ++_removalToken,
+        cycleId: cycleId,
+        previousIds: before,
+      ),
+    );
+  }
+
+  /// Reaplica [ids] como ordem; itens que não estavam na lista (criados
+  /// depois) vão para o fim.
+  static List<Item> _restoreOrder(List<Item> items, List<String> ids) {
+    final byId = {for (final i in items) i.id: i};
+    final restored = [for (final id in ids) ?byId.remove(id)];
+    return [...restored, ...byId.values];
+  }
+
   // --- desfazer / importar ---------------------------------------------------
 
   Future<void> undoRemoval() {
@@ -162,6 +207,14 @@ class CyclesCubit extends Cubit<CyclesState> {
       case CycleRemoval(:final cycle, :final index):
         return _commit(
           [...state.cycles]..insert(index.clamp(0, state.cycles.length), cycle),
+          clearRemoval: true,
+        );
+      case ItemsOrderChange(:final cycleId, :final previousIds):
+        return _commit(
+          _mapCycle(
+            cycleId,
+            (c) => c.copyWith(items: _restoreOrder(c.items, previousIds)),
+          ),
           clearRemoval: true,
         );
       case ItemRemoval(:final cycleId, :final item, :final index):
