@@ -51,36 +51,31 @@ void main() {
   });
 
   group('buildTimeline', () {
-    test(
-      'new-cycle card first, then month groups; year only when it changes',
-      () {
-        final sorted = [
-          c('a', DateTime(2026, 11, 20)),
-          c('b', DateTime(2026, 11, 5)),
-          c('x', DateTime(2026, 10, 5)),
-          c('d', DateTime(2025, 12, 5)),
-        ];
-        final entries = buildTimeline(sorted, sorted[1]);
-        expect(entries.map((e) => e.runtimeType.toString()), [
-          'NewCycleEntry',
-          'GroupEntry', // novembro de 2026 (mostra o ano)
-          'CycleEntry',
-          'CycleEntry',
-          'GroupEntry', // outubro (mesmo ano, sem ano)
-          'CycleEntry',
-          'GroupEntry', // dezembro de 2025 (ano mudou)
-          'CycleEntry',
-        ]);
-        final groups = entries.whereType<GroupEntry>().toList();
-        expect(groups.map((g) => (g.date.year, g.date.month, g.showYear)), [
-          (2026, 11, true),
-          (2026, 10, false),
-          (2025, 12, true),
-        ]);
-        expect((entries[3] as CycleEntry).isCurrent, isTrue);
-        expect((entries[2] as CycleEntry).isCurrent, isFalse);
-      },
-    );
+    test('new-cycle card first, then one group per month/year', () {
+      final sorted = [
+        c('a', DateTime(2026, 11, 20)),
+        c('b', DateTime(2026, 11, 5)),
+        c('x', DateTime(2026, 10, 5)),
+        c('y', DateTime(2025, 10, 5)), // mesmo mês, outro ano => novo grupo
+      ];
+      final entries = buildTimeline(sorted, sorted[1]);
+      expect(entries.map((e) => e.runtimeType.toString()), [
+        'NewCycleEntry',
+        'GroupEntry',
+        'CycleEntry',
+        'CycleEntry',
+        'GroupEntry',
+        'CycleEntry',
+        'GroupEntry',
+        'CycleEntry',
+      ]);
+      expect(
+        entries.whereType<GroupEntry>().map((g) => (g.date.year, g.date.month)),
+        [(2026, 11), (2026, 10), (2025, 10)],
+      );
+      expect((entries[3] as CycleEntry).isCurrent, isTrue);
+      expect((entries[2] as CycleEntry).isCurrent, isFalse);
+    });
 
     test('only the new-cycle card when there are no cycles', () {
       expect(buildTimeline(const [], null), hasLength(1));

@@ -183,11 +183,11 @@ class _Timeline extends StatelessWidget {
         isLast: isLast,
         child: NewCycleCard(onTap: onCreate),
       ),
-      GroupEntry(:final date, :final showYear) => TimelineRow(
+      GroupEntry(:final date) => TimelineRow(
         kind: NodeKind.group,
         isLast: isLast,
         bottomGap: 8,
-        child: GroupLabel(date: date, showYear: showYear),
+        child: GroupLabel(date: date),
       ),
       CycleEntry(:final cycle, :final isCurrent) => TimelineRow(
         kind: nodeKindFor(cycle, isCurrent: isCurrent),

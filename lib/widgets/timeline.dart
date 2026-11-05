@@ -165,48 +165,38 @@ class _Node extends StatelessWidget {
   }
 }
 
-/// Etiquetas do grupo: o ano (só quando muda) e o mês por extenso.
+/// Etiqueta do grupo (mês e ano por extenso, ex.: "Novembro de 2026").
 class GroupLabel extends StatelessWidget {
-  const GroupLabel({super.key, required this.date, required this.showYear});
+  const GroupLabel({super.key, required this.date});
 
   final DateTime date;
-  final bool showYear;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final locale = Localizations.localeOf(context).toString();
-    final month = toBeginningOfSentenceCase(
-      DateFormat.MMMM(locale).format(date),
-    );
-
-    Widget pill(String text, {required bool strong}) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: strong ? scheme.primaryContainer : scheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(20),
-        border: strong ? null : Border.all(color: scheme.outlineVariant),
-      ),
-      child: Text(
-        text,
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: strong ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
-        ),
-      ),
+    final text = toBeginningOfSentenceCase(
+      DateFormat.yMMMM(locale).format(date),
     );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 6,
-          children: [
-            if (showYear) pill('${date.year}', strong: false),
-            pill(month, strong: true),
-          ],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: scheme.outlineVariant),
+          ),
+          child: Text(
+            text,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
         ),
       ),
     );
@@ -462,11 +452,10 @@ class NewCycleEntry extends TimelineEntry {
   const NewCycleEntry();
 }
 
-/// Cabeçalho de um grupo (mês); mostra também o ano quando ele muda.
+/// Cabeçalho de um grupo (mês + ano).
 class GroupEntry extends TimelineEntry {
-  const GroupEntry(this.date, {required this.showYear});
+  const GroupEntry(this.date);
   final DateTime date;
-  final bool showYear;
 }
 
 class CycleEntry extends TimelineEntry {
@@ -475,16 +464,14 @@ class CycleEntry extends TimelineEntry {
   final bool isCurrent;
 }
 
-/// Monta a lista: "+ Novo ciclo", depois os ciclos agrupados por mês (com o
-/// ano indicado quando muda).
+/// Monta a lista: "+ Novo ciclo", depois os ciclos agrupados por mês/ano.
 List<TimelineEntry> buildTimeline(List<Cycle> sorted, Cycle? current) {
   final entries = <TimelineEntry>[const NewCycleEntry()];
   int? year;
   int? month;
   for (final c in sorted) {
-    final newYear = c.date.year != year;
-    if (newYear || c.date.month != month) {
-      entries.add(GroupEntry(c.date, showYear: newYear));
+    if (c.date.year != year || c.date.month != month) {
+      entries.add(GroupEntry(c.date));
       year = c.date.year;
       month = c.date.month;
     }

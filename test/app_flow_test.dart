@@ -83,7 +83,7 @@ void main() {
     expect(find.text('Ciclo teste'), findsNWidgets(2));
     expect(find.text('1 de 2 realizados'), findsNWidgets(2));
     expect(find.text('Ciclo atual'), findsOneWidget);
-    // etiqueta do mês por extenso (capitalizada) do ciclo criado hoje
+    // etiqueta "Mês de AAAA" por extenso do ciclo criado hoje
     const months = [
       'Janeiro',
       'Fevereiro',
@@ -98,8 +98,11 @@ void main() {
       'Novembro',
       'Dezembro',
     ];
-    expect(find.text(months[DateTime.now().month - 1]), findsOneWidget);
-    expect(find.text('${DateTime.now().year}'), findsOneWidget);
+    final now = DateTime.now();
+    expect(
+      find.text('${months[now.month - 1]} de ${now.year}'),
+      findsOneWidget,
+    );
     expect(find.text('Linha do tempo'), findsOneWidget);
   });
 }
