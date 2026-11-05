@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTagline.
   ///
   /// In pt, this message translates to:
-  /// **'Planejamento financeiro'**
+  /// **'Planejamento Financeiro'**
   String get appTagline;
 
   /// No description provided for @cyclesTitle.

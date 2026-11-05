@@ -12,7 +12,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appName => 'Plafin';
 
   @override
-  String get appTagline => 'Planejamento financeiro';
+  String get appTagline => 'Planejamento Financeiro';
 
   @override
   String get cyclesTitle => 'Ciclos';
