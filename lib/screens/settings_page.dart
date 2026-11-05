@@ -107,7 +107,10 @@ class SettingsPage extends StatelessWidget {
         ),
         Card(
           clipBehavior: Clip.antiAlias,
-          child: Column(children: children),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
+          ),
         ),
       ],
     );
