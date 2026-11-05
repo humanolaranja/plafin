@@ -103,7 +103,10 @@ class _RemovalSnackBars extends StatelessWidget {
           ..showSnackBar(
             SnackBar(
               content: Text(message),
-              duration: const Duration(seconds: 6),
+              duration: const Duration(seconds: 3),
+              // Com `action`, o SnackBar é "persistente" por padrão e nunca
+              // some sozinho; aqui ele deve expirar após [duration].
+              persist: false,
               showCloseIcon: true,
               action: SnackBarAction(
                 label: l10n.undo,

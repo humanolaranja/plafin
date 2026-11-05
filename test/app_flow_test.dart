@@ -105,4 +105,36 @@ void main() {
     );
     expect(find.text('Linha do tempo'), findsOneWidget);
   });
+
+  testWidgets('undo snackbar disappears by itself after 3 seconds', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1080, 2340);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    SharedPreferences.setMockInitialValues({
+      'plafin.settings.locale': 'pt',
+      'plafin.data.v2':
+          '{"schemaVersion":2,"cycles":[{"id":"c","name":"Teste","date":"2026-11-05","items":['
+          '{"id":"1","name":"Luz","amountCents":1000,"income":false,"done":false}]}]}',
+    });
+    await tester.pumpWidget(
+      PlafinApp(prefs: await SharedPreferences.getInstance()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Teste').last);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Luz'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Excluir'));
+    await tester.pumpAndSettle();
+    expect(find.text('Item excluído'), findsOneWidget);
+
+    await tester.pump(const Duration(milliseconds: 2500)); // ainda visível
+    expect(find.text('Item excluído'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1000)); // passou de 3 s
+    await tester.pumpAndSettle();
+    expect(find.text('Item excluído'), findsNothing);
+  });
 }
